@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold mb-8">Admin Dashboard</h1>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <h3 class="text-gray-500 text-sm font-medium uppercase">Total Users</h3>
+            <p class="text-3xl font-bold mt-2">{{ total_users }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <h3 class="text-gray-500 text-sm font-medium uppercase">Total Assessments</h3>
+            <p class="text-3xl font-bold mt-2">{{ total_assessments }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+            <h3 class="text-gray-500 text-sm font-medium uppercase">Completed Assessments</h3>
+            <p class="text-3xl font-bold mt-2">{{ completed_assessments }}</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h3 class="font-bold">Recent Users</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 font-medium text-gray-500">Mobile</th>
+                        <th class="px-6 py-3 font-medium text-gray-500">Joined</th>
+                        <th class="px-6 py-3 font-medium text-gray-500">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for user in recent_users %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 font-medium">{{ user.mobile }}</td>
+                        <td class="px-6 py-4 text-gray-500">{{ user.date_joined|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4">
+                            {% if user.is_active %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+                            {% else %}
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

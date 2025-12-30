@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-3xl p-8 md:p-12 border border-gray-100 shadow-sm mb-12 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">Assessment Complete!</h1>
+            <p class="text-gray-600 text-lg mb-8">Based on your answers, here is your personalized career roadmap.</p>
+
+            <div class="inline-block bg-gray-900 text-white px-6 py-2 rounded-full text-xl font-bold mb-8">
+                Score: {{ assessment.score }}
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Recommended Careers -->
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-blue-600">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Recommended Careers
+                </h3>
+                <ul class="space-y-4">
+                    {% for career in recommendations.careers %}
+                    <li class="flex items-center gap-3 p-4 bg-blue-50 rounded-xl text-blue-900 font-medium">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        {{ career }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Skills to Learn -->
+            <div class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="text-green-600">
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                        </path>
+                    </svg>
+                    Skills to Master
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for skill in recommendations.skills %}
+                    <span class="px-4 py-2 bg-green-50 text-green-700 rounded-full font-medium border border-green-100">
+                        {{ skill }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center">
+            <a href="/" class="text-gray-500 hover:text-black underline">Back to Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

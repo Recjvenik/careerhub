@@ -1,0 +1,11 @@
+Django>=4.2
+psycopg2-binary
+python-dotenv
+Pillow
+gunicorn
+whitenoise
+django-allauth
+requests
+PyJWT
+cryptography
+python-decouple

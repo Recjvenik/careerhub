@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - DishaPath{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12 bg-notebook-bg">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <!-- Progress Bar -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-gray-900 font-semibold">Profile Completion</h2>
+                    <span class="text-indigo-600 font-bold">{{ completion_percentage }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500"
+                        style="width: {{ completion_percentage }}%"></div>
+                </div>
+            </div>
+
+            <form method="post" class="bg-white rounded-xl shadow-sm p-8 border border-gray-200">
+                {% csrf_token %}
+
+                <div class="space-y-12">
+                    <div class="border-b border-gray-200 pb-12">
+                        <h2 class="text-xl font-semibold text-gray-900">Profile Information</h2>
+                        <p class="mt-1 text-sm text-gray-500">Update your personal details and academic information.</p>
+
+                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+
+                            <!-- Full Name -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.full_name.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">Full Name</label>
+                                <div class="mt-2">
+                                    {{ form.full_name }}
+                                    {% if form.full_name.errors %}
+                                    <p class="text-red-600 text-xs mt-1">{{ form.full_name.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.email.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">Email</label>
+                                <div class="mt-2">
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                    <p class="text-red-600 text-xs mt-1">{{ form.email.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Mobile -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.mobile.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">Mobile Number</label>
+                                <div class="mt-2">
+                                    {{ form.mobile }}
+                                    {% if form.mobile.errors %}
+                                    <p class="text-red-600 text-xs mt-1">{{ form.mobile.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Gender -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.gender.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">Gender</label>
+                                <div class="mt-2">
+                                    {{ form.gender }}
+                                    {% if form.gender.errors %}
+                                    <p class="text-red-600 text-xs mt-1">{{ form.gender.errors.0 }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- College -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.college.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">College</label>
+                                <div class="mt-2 relative">
+                                    <input type="text" id="college-search"
+                                        class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder="Search College..." value="{{ user.college.name|default:'' }}">
+                                    {{ form.college }} <!-- Hidden select or updated via JS -->
+                                    <div id="college-results"
+                                        class="absolute z-10 w-full bg-white border border-gray-200 rounded-md mt-1 hidden max-h-60 overflow-y-auto shadow-lg">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Branch -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.branch.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">Branch</label>
+                                <div class="mt-2 relative">
+                                    <input type="text" id="branch-search"
+                                        class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder="Search Branch..." value="{{ user.branch.name|default:'' }}">
+                                    {{ form.branch }}
+                                    <div id="branch-results"
+                                        class="absolute z-10 w-full bg-white border border-gray-200 rounded-md mt-1 hidden max-h-60 overflow-y-auto shadow-lg">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- State -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.state.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">State</label>
+                                <div class="mt-2 relative">
+                                    <input type="text" id="state-search"
+                                        class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder="Search State..." value="{{ user.state.name|default:'' }}">
+                                    {{ form.state }}
+                                    <div id="state-results"
+                                        class="absolute z-10 w-full bg-white border border-gray-200 rounded-md mt-1 hidden max-h-60 overflow-y-auto shadow-lg">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- City -->
+                            <div class="sm:col-span-3">
+                                <label for="{{ form.city.id_for_label }}"
+                                    class="block text-sm font-medium leading-6 text-gray-900">City</label>
+                                <div class="mt-2 relative">
+                                    <input type="text" id="city-search"
+                                        class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                        placeholder="Search City..." value="{{ user.city.name|default:'' }}">
+                                    {{ form.city }}
+                                    <div id="city-results"
+                                        class="absolute z-10 w-full bg-white border border-gray-200 rounded-md mt-1 hidden max-h-60 overflow-y-auto shadow-lg">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex items-center justify-end gap-x-6">
+                    <a href="/" class="text-sm font-semibold text-gray-900 hover:text-gray-700">Cancel</a>
+                    <button type="submit"
+                        class="px-3 py-2 bg-black text-white rounded-md font-medium hover:bg-gray-800 transition-all flex items-center gap-2">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Hide actual selects
+        $('#id_college, #id_branch, #id_state, #id_city').hide();
+
+        function debounce(func, wait) {
+            let timeout;
+            return function (...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        }
+
+        function setupSearch(inputId, resultsId, hiddenSelectId, url, paramName = 'q', extraParams = () => ({})) {
+            function fetchResults(query = '') {
+                let data = {};
+                data[paramName] = query;
+                Object.assign(data, extraParams());
+
+                $.ajax({
+                    url: url,
+                    data: data,
+                    success: function (response) {
+                        let html = '';
+                        if (response.length > 0) {
+                            response.forEach(item => {
+                                html += `<div class="px-4 py-2 hover:bg-gray-100 cursor-pointer text-gray-900" data-id="${item.id}">${item.name}</div>`;
+                            });
+                            $(resultsId).html(html).removeClass('hidden');
+                        } else {
+                            $(resultsId).html('<div class="px-4 py-2 text-gray-500">No results found</div>').removeClass('hidden');
+                        }
+                    }
+                });
+            }
+
+            const debouncedFetch = debounce(function () {
+                const val = $(this).val();
+                if (val.length >= 3) {
+                    fetchResults(val);
+                } else if (val.length === 0) {
+                    // Optional: clear results if empty? Or show default?
+                    // User said "initial only show 10", implies empty -> show 10.
+                    // But if user types 1 char and deletes, it goes back to 0.
+                    fetchResults('');
+                } else {
+                    // 1 or 2 chars -> hide or do nothing?
+                    // Usually better to hide if not enough chars
+                    $(resultsId).addClass('hidden');
+                }
+            }, 300);
+
+            $(inputId).on('input', debouncedFetch);
+
+            $(inputId).on('focus', function () {
+                const val = $(this).val();
+                if (val.length === 0) {
+                    fetchResults('');
+                } else if (val.length >= 3) {
+                    fetchResults(val);
+                }
+            });
+
+            $(document).on('click', resultsId + ' div', function () {
+                const text = $(this).text();
+                const id = $(this).data('id');
+                if (id) {
+                    $(inputId).val(text);
+                    $(hiddenSelectId).val(id);
+                    $(resultsId).addClass('hidden');
+
+                    // Trigger change for dependent fields
+                    if (hiddenSelectId === '#id_state') {
+                        $('#city-search').val('');
+                        $('#id_city').val('');
+                    }
+                }
+            });
+
+            // Close results when clicking outside
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest(inputId).length && !$(e.target).closest(resultsId).length) {
+                    $(resultsId).addClass('hidden');
+                }
+            });
+        }
+
+        setupSearch('#college-search', '#college-results', '#id_college', '/core/api/colleges/');
+        setupSearch('#branch-search', '#branch-results', '#id_branch', '/core/api/branches/');
+        setupSearch('#state-search', '#state-results', '#id_state', '/core/api/states/');
+        setupSearch('#city-search', '#city-results', '#id_city', '/core/api/cities/', 'q', function () {
+            return { state_id: $('#id_state').val() };
+        });
+    });
+</script>
+{% endblock %}

@@ -89,9 +89,31 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
+from assessments.models import Assessment
+from courses.models import Enrollment
+
 @login_required
 def dashboard_view(request):
-    return render(request, 'users/dashboard.html')
+    user = request.user
+    
+    # Get completed assessment
+    assessment = Assessment.objects.filter(user=user, status='completed').last()
+    
+    # Get active enrollment
+    active_enrollment = Enrollment.objects.filter(user=user, status='active').first()
+    
+    # Get recommended courses if assessment done but no active enrollment
+    recommended_courses = []
+    if assessment and not active_enrollment:
+        # Assuming result_data has recommended_courses list
+        recommended_courses = assessment.result_data.get('recommended_courses', [])
+        
+    return render(request, 'users/dashboard.html', {
+        'user': user,
+        'assessment': assessment,
+        'active_enrollment': active_enrollment,
+        'recommended_courses': recommended_courses
+    })
 
 @login_required
 def profile_view(request):
@@ -104,7 +126,12 @@ def profile_view(request):
                 user.location = f"{user.city.name}, {user.state.name}"
             user.save()
             messages.success(request, 'Profile updated successfully!')
-            return redirect('profile')
+            
+            # Check if assessment is completed
+            if Assessment.objects.filter(user=user, status='completed').exists():
+                return redirect('dashboard')
+            else:
+                return redirect('start_assessment')
     else:
         form = ProfileUpdateForm(instance=user)
 
@@ -113,7 +140,6 @@ def profile_view(request):
     filled_fields = 0
     for field in fields:
         if getattr(user, field):
-            print('field: ', field)
             filled_fields += 1
     
     completion_percentage = int((filled_fields / len(fields)) * 100)

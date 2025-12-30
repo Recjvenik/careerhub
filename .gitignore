@@ -37,6 +37,7 @@ __pycache__/
 env/
 venv/
 build/
+node_modules/
 develop-eggs/
 dist/
 downloads/

@@ -27,10 +27,24 @@ class Course(models.Model):
         return self.title
 
 class Enrollment(models.Model):
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+        ('dropped', 'Dropped'),
+    )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     enrolled_at = models.DateTimeField(auto_now_add=True)
     progress = models.IntegerField(default=0, help_text="Percentage completed")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
     
     def __str__(self):
-        return f"{self.user.mobile} - {self.course.title}"
+        return f"{self.user.mobile} - {self.course.title} ({self.status})"
+
+class CourseSkill(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    skill_tag = models.CharField(max_length=100)
+    relevance_score = models.IntegerField(default=100)
+    
+    def __str__(self):
+        return f"{self.course.title} - {self.skill_tag}"

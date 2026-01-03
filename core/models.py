@@ -23,7 +23,7 @@ class CityState(models.Model):
         return f"{self.city.name} - {self.state.name}"
 
 class College(models.Model):
-    name = models.CharField(max_length=255,default=None)
+    name = models.CharField(max_length=500,default=None)
     short_name = models.CharField(max_length=255,default=None)
 
     def __str__(self):

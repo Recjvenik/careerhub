@@ -28,3 +28,11 @@ urlpatterns = [
     path('custom-admin/', include('admin_panel.urls')),
     path('jobs/', include('jobs.urls')),
 ]
+
+from django.conf import settings
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

@@ -9,3 +9,4 @@ requests
 PyJWT
 cryptography
 python-decouple
+django-debug-toolbar

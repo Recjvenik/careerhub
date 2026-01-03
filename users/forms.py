@@ -150,7 +150,7 @@ class ProfileUpdateForm(forms.ModelForm):
                 'placeholder': 'Enter mobile number'
             }),
             'gender': forms.Select(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                'class': 'block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
             }),
             'college': forms.Select(attrs={
                 'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
@@ -177,11 +177,11 @@ class ProfileUpdateForm(forms.ModelForm):
         # For now, we'll populate with all objects or handle it in the view/template.
         # However, for performance with large datasets, we shouldn't load all.
         # But since we have dummy data (10 rows), it's fine to load all for now.
-        from core.models import College, Branch, City, State
-        self.fields['college'].queryset = College.objects.all()
-        self.fields['branch'].queryset = Branch.objects.all()
-        self.fields['city'].queryset = City.objects.all()
-        self.fields['state'].queryset = State.objects.all()
+        # from core.models import College, Branch, City, State
+        # self.fields['college'].queryset = College.objects.all()
+        # self.fields['branch'].queryset = Branch.objects.all()
+        # self.fields['city'].queryset = City.objects.all()
+        # self.fields['state'].queryset = State.objects.all()
 
     def clean_mobile(self):
         mobile = self.cleaned_data.get('mobile')

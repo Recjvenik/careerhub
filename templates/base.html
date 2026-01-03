@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}DishaPath{% endblock %}</title>
+    <title>{% block title %}Karyo{% endblock %}</title>
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -26,7 +26,7 @@
         x-data="{ mobileMenuOpen: false }">
         <div class="container mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-8">
-                <a href="/" class="text-xl font-semibold tracking-tight">DishaPath</a>
+                <a href="/" class="text-xl font-semibold tracking-tight">Karyo</a>
 
                 <!-- Desktop Navigation -->
                 {% if user.is_authenticated %}
@@ -54,7 +54,7 @@
                     <form method="post" action="{% url 'logout' %}" class="inline">
                         {% csrf_token %}
                         <button type="submit"
-                            class="text-sm font-medium px-4 py-2 rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">Logout</button>
+                            class="text-sm font-medium px-4 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">Logout</button>
                     </form>
                 </div>
 
@@ -68,7 +68,7 @@
                 </button>
                 {% else %}
                 <a href="{% url 'login' %}"
-                    class="text-sm font-medium px-4 py-2 rounded-full bg-black text-white hover:bg-gray-800 transition-colors">Login</a>
+                    class="text-sm font-medium px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 transition-colors">Login</a>
                 {% endif %}
             </div>
         </div>
@@ -98,7 +98,7 @@
                 </form>
                 {% else %}
                 <a href="{% url 'login' %}"
-                    class="block w-full text-center text-sm font-medium px-4 py-2 rounded-full bg-black text-white hover:bg-gray-800 transition-colors">Login</a>
+                    class="block w-full text-center text-sm font-medium px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 transition-colors">Login</a>
                 {% endif %}
             </div>
         </div>
@@ -110,7 +110,7 @@
 
     <footer class="bg-gray-50 border-t border-gray-100 py-12 mt-20">
         <div class="container mx-auto px-4 text-center">
-            <p class="text-gray-500 text-sm">© 2024 DishaPath. All rights reserved.</p>
+            <p class="text-gray-500 text-sm">© 2026 Karyo. All rights reserved.</p>
         </div>
     </footer>
 </body>

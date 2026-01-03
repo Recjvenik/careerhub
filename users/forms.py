@@ -31,6 +31,22 @@ class UserRegistrationForm(forms.ModelForm):
             }),
         }
 
+    def clean_mobile(self):
+        mobile = self.cleaned_data.get('mobile')
+        if mobile:
+            # Remove any non-digit characters
+            mobile = ''.join(filter(str.isdigit, mobile))
+            
+            # Check length (assuming Indian mobile numbers)
+            if len(mobile) != 10:
+                raise ValidationError("Mobile number must be 10 digits.")
+            
+            # Check if mobile already exists
+            if CustomUser.objects.filter(mobile=mobile).exists():
+                raise ValidationError("This mobile number is already registered.")
+                
+        return mobile
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -166,4 +182,20 @@ class ProfileUpdateForm(forms.ModelForm):
         self.fields['branch'].queryset = Branch.objects.all()
         self.fields['city'].queryset = City.objects.all()
         self.fields['state'].queryset = State.objects.all()
+
+    def clean_mobile(self):
+        mobile = self.cleaned_data.get('mobile')
+        if mobile:
+            # Remove any non-digit characters
+            mobile = ''.join(filter(str.isdigit, mobile))
+            
+            # Check length (assuming Indian mobile numbers)
+            if len(mobile) != 10:
+                raise ValidationError("Mobile number must be 10 digits.")
+                
+            # Check if mobile already exists (excluding current user)
+            if self.instance.pk and CustomUser.objects.filter(mobile=mobile).exclude(pk=self.instance.pk).exists():
+                raise ValidationError("This mobile number is already registered.")
+                
+        return mobile
 

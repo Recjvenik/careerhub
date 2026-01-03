@@ -1,8 +1,10 @@
 import random
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
+from datetime import timedelta
 from .models import CustomUser, OTP
 from .forms import UserRegistrationForm, UserLoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm
 
@@ -13,12 +15,94 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('index')
+            # Don't save yet, store in session
+            user_data = {
+                'full_name': form.cleaned_data['full_name'],
+                'mobile': form.cleaned_data['mobile'],
+                'email': form.cleaned_data['email'],
+                'password': form.cleaned_data['password']
+            }
+            
+            # Generate OTP
+            mobile = user_data['mobile']
+            otp_code = generate_otp()
+            OTP.objects.create(mobile=mobile, otp=otp_code)
+            print(f"OTP for {mobile}: {otp_code}") # For dev
+            
+            # Store in session
+            request.session['registration_data'] = user_data
+            request.session['verify_mobile'] = mobile
+            
+            return redirect('verify_registration_otp')
     else:
         form = UserRegistrationForm()
     return render(request, 'users/register.html', {'form': form})
+
+def verify_registration_otp(request):
+    mobile = request.session.get('verify_mobile')
+    user_data = request.session.get('registration_data')
+    
+    if not mobile or not user_data:
+        return redirect('register')
+        
+    if request.method == 'POST':
+        otp_input = request.POST.get('otp')
+        
+        try:
+            otp_record = OTP.objects.filter(mobile=mobile, otp=otp_input, is_verified=False).latest('created_at')
+            
+            # Check expiration (5 minutes)
+            if otp_record.created_at < timezone.now() - timedelta(minutes=5):
+                messages.error(request, "OTP has expired. Please request a new one.")
+                return redirect('verify_registration_otp')
+
+            otp_record.is_verified = True
+            otp_record.save()
+            
+            # Create user
+            user = CustomUser.objects.create_user(
+                mobile=user_data['mobile'],
+                email=user_data['email'],
+                password=user_data['password'],
+                full_name=user_data['full_name']
+            )
+            user.is_verified = True
+            user.save()
+            
+            # Login user
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            
+            # Clear session
+            del request.session['verify_mobile']
+            del request.session['registration_data']
+            
+            messages.success(request, "Confirm Your OTP to Get Started!")
+            return redirect('index')
+            
+        except OTP.DoesNotExist:
+            messages.error(request, "Invalid OTP")
+            
+    return render(request, 'users/verify_otp.html', {'action_url': 'verify_registration_otp'})
+
+def resend_otp_view(request):
+    mobile = request.session.get('verify_mobile')
+    if not mobile:
+        messages.error(request, "Session expired. Please start over.")
+        return redirect('register')
+        
+    # Generate new OTP
+    otp_code = generate_otp()
+    OTP.objects.create(mobile=mobile, otp=otp_code)
+    print(f"Resent OTP for {mobile}: {otp_code}") # For dev
+    
+    messages.success(request, "A new OTP has been sent to your mobile number.")
+    
+    # Determine where to redirect based on referer or session
+    # For now, default to verify_registration_otp if registration_data exists
+    if request.session.get('registration_data'):
+        return redirect('verify_registration_otp')
+        
+    return redirect('login') # Fallback
 
 def login_view(request):
     if request.method == 'POST':

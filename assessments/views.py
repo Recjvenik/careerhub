@@ -29,8 +29,9 @@ def start_assessment(request):
 @login_required
 def question_view(request, assessment_id, question_index):
     assessment = get_object_or_404(Assessment, id=assessment_id, user=request.user)
-    questions = Question.objects.filter(category='technical') # Filter by category if needed
-    print('questions: ', questions.values())
+    questions = Question.objects.filter(category='technical')[:10] # Filter by category if needed
+    print('questions: ', questions.values()[0])
+
     if question_index >= len(questions):
         return redirect('submit_assessment', assessment_id=assessment.id)
         
@@ -44,7 +45,7 @@ def question_view(request, assessment_id, question_index):
             selected_option=selected_option
         )
         return redirect('question_view', assessment_id=assessment.id, question_index=question_index + 1)
-        
+
     return render(request, 'assessments/question.html', {
         'assessment': assessment,
         'question': question,
@@ -136,7 +137,7 @@ def submit_assessment(request, assessment_id):
     if skill_gaps:
         # Find courses that have ANY of the missing skills
         # We can use __in lookup on the related CourseSkill
-        courses = Course.objects.filter(courseskill__skill_tag__in=skill_gaps).distinct()
+        courses = Course.objects.filter(skills__skill_tag__in=skill_gaps).distinct()
         
         for course in courses:
             recommended_courses.append({

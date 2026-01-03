@@ -95,7 +95,6 @@ from courses.models import Enrollment
 @login_required
 def dashboard_view(request):
     user = request.user
-    
     # Get completed assessment
     assessment = Assessment.objects.filter(user=user, status='completed').last()
     

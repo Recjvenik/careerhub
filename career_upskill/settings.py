@@ -122,8 +122,8 @@ DATABASES = {
         'PORT': config('DB_PORT', default='5432'),
         'OPTIONS': {
             'sslmode': 'prefer',
-            'channel_binding': 'require',
         },
+        'DISABLE_SERVER_SIDE_CURSORS': True,  # Fixes cursor naming issues
     }
 }
 

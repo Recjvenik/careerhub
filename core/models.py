@@ -26,10 +26,6 @@ class College(models.Model):
     name = models.CharField(max_length=500,default=None)
     short_name = models.CharField(max_length=255,default=None)
 
-    class Meta:
-        unique_together = ['name', 'short_name']
-        db_table = 'college'
-
     def __str__(self):
         return self.name
 

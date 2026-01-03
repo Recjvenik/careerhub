@@ -1,0 +1,31 @@
+question_id,question_text,option_a,option_b,option_c,option_d,correct_option,skill_tag,difficulty
+1,What is the correct way to define a function in Python?,def function_name():,function function_name():,define function_name():,func function_name():,a,python_basics,easy
+2,Which data type is immutable in Python?,list,dictionary,tuple,set,c,python_basics,easy
+3,What does the 'self' keyword represent in a Python class?,The class itself,The current instance of the class,A global variable,A static method,b,python_oop,easy
+4,How do you create a virtual environment in Python 3?,python -m venv myenv,virtualenv --create myenv,pip install venv,python create-venv myenv,a,python_basics,easy
+5,What is the purpose of __init__ method in Python classes?,To delete an object,To initialize object attributes,To define class methods,To import modules,b,python_oop,medium
+6,Which HTTP method is used to update an existing resource?,GET,POST,PUT,DELETE,c,api_basics,easy
+7,What status code indicates a successful POST request that created a resource?,200 OK,201 Created,204 No Content,301 Moved,b,api_basics,medium
+8,What does REST stand for?,Remote Execution State Transfer,Representational State Transfer,Request State Transfer,Resource State Transfer,b,api_basics,easy
+9,In Django, which file contains URL routing configurations?,models.py,views.py,urls.py,settings.py,c,django_basics,easy
+10,What is the purpose of Django migrations?,To backup the database,To create and modify database schema,To handle user authentication,To serve static files,b,django_orm,medium
+11,Which command creates a new Django migration?,python manage.py migrate,python manage.py makemigrations,python manage.py createmigration,python manage.py syncdb,b,django_orm,easy
+12,What is a Django QuerySet?,A list of SQL queries,A lazy database lookup object,A database connection,A form validation result,b,django_orm,medium
+13,How do you filter objects in Django ORM?,Model.objects.filter(),Model.filter.objects(),Model.get.filter(),Model.query.filter(),a,django_orm,easy
+14,What is the purpose of Django's ORM?,To write raw SQL queries,To map Python objects to database tables,To create HTML templates,To handle HTTP requests,b,django_orm,medium
+15,Which decorator makes a Django view require authentication?,@login_required,@authenticated,@require_auth,@user_only,a,django_auth,medium
+16,What is the correct way to create a foreign key relationship in Django?,ForeignKey(Model),models.ForeignKey(Model on_delete=models.CASCADE),models.Relation(Model),models.Link(Model),b,django_orm,medium
+17,In a REST API, which status code indicates the resource was not found?,400,401,403,404,d,api_basics,easy
+18,What is the purpose of serializers in Django REST Framework?,To compress data,To convert complex data types to JSON/XML,To encrypt passwords,To validate user input only,b,api_basics,medium
+19,How do you handle exceptions in Python?,try/except,catch/throw,handle/error,begin/rescue,a,python_basics,easy
+20,What is a Python decorator?,A way to add CSS to code,A function that modifies another function,A type of loop,A database query,b,python_advanced,medium
+21,Which command applies pending Django migrations to the database?,python manage.py makemigrations,python manage.py migrate,python manage.py syncdb,python manage.py apply,b,django_orm,easy
+22,What is N+1 query problem in Django ORM?,Running N queries plus 1 extra due to lazy loading,Having N+1 database tables,A syntax error,A migration conflict,a,production_backend,hard
+23,How do you optimize N+1 queries in Django?,Using raw SQL,Using select_related() or prefetch_related(),Adding more indexes,Increasing database connections,b,production_backend,hard
+24,What is the purpose of database indexing?,To backup data,To speed up query performance,To encrypt data,To compress storage,b,production_backend,medium
+25,Which tool is commonly used for API documentation in Django?,Swagger/OpenAPI,Excel,Word,PowerPoint,a,api_basics,medium
+26,What is the purpose of rate limiting in APIs?,To slow down the application,To prevent abuse and ensure fair usage,To increase response time,To reduce server costs,b,production_backend,medium
+27,How do you handle database transactions in Django?,Using atomic() decorator,Using commit() function,Using save_all() method,Using transaction.start(),a,django_orm,hard
+28,What is the purpose of Django middleware?,To style templates,To process requests/responses globally,To create database tables,To compile Python code,b,django_advanced,medium
+29,Which HTTP header is used for API authentication tokens?,Content-Type,Authorization,Accept,Cookie,b,api_basics,medium
+30,What is connection pooling in a production database?,Sharing database connections across requests,Creating new connections for each query,Closing all connections,Encrypting connections,a,production_backend,hard

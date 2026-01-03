@@ -42,9 +42,18 @@ class Enrollment(models.Model):
         return f"{self.user.mobile} - {self.course.title} ({self.status})"
 
 class CourseSkill(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    COVERAGE_CHOICES = (
+        ('basic', 'Basic'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    )
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='skills')
     skill_tag = models.CharField(max_length=100)
+    coverage_level = models.CharField(max_length=20, choices=COVERAGE_CHOICES, default='basic')
     relevance_score = models.IntegerField(default=100)
     
+    class Meta:
+        unique_together = ['course', 'skill_tag']
+    
     def __str__(self):
-        return f"{self.course.title} - {self.skill_tag}"
+        return f"{self.course.title} - {self.skill_tag} ({self.coverage_level})"

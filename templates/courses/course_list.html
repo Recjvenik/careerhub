@@ -16,11 +16,9 @@
                 {% for course in courses %}
                 <div
                     class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
-                    <div class="p-6 flex-grow">
+                <div class="p-6 flex-grow">
                         <div class="flex justify-between items-start mb-4">
-                            <span
-                                class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold uppercase tracking-wide">{{
-                                course.level }}</span>
+                            <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold uppercase tracking-wide">{{ course.level }}</span>
                             <span class="text-gray-500 text-sm font-medium">{{ course.duration }}</span>
                         </div>
                         <h2 class="text-xl font-bold text-gray-900 mb-2">{{ course.title }}</h2>
@@ -48,8 +46,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <div>
                                 <span class="text-2xl font-bold text-gray-900">₹{{ course.price|floatformat:0 }}</span>
-                                <span class="text-sm text-gray-500 line-through ml-2">₹{{
-                                    course.original_price_inr|floatformat:0 }}</span>
+                                <span class="text-sm text-gray-500 line-through ml-2">₹{{ course.original_price_inr|floatformat:0 }}</span>
                             </div>
                         </div>
                         {% if active_course_id == course.id %}

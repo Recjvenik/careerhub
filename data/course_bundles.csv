@@ -1,0 +1,11 @@
+course_id,course_title,short_description,level,duration,price_inr,job_roles
+1,Python Fundamentals for Backend,Master Python basics including data types functions and OOP. Build a solid foundation for backend development.,beginner,4 weeks,499,Backend Developer Intern|Junior Backend Developer
+2,Django Web Development Bootcamp,Learn Django from scratch - models views templates and forms. Build your first web application.,beginner,6 weeks,799,Backend Developer Intern|Junior Django Developer
+3,REST API Development with Django,Build production-ready REST APIs using Django REST Framework. Learn serializers viewsets and authentication.,intermediate,5 weeks,999,API Developer|Junior Backend Developer
+4,Django ORM Mastery,Deep dive into Django ORM - complex queries relationships and optimization techniques.,intermediate,4 weeks,799,Junior Django Developer|Backend Developer
+5,Python OOP and Design Patterns,Master object-oriented programming and common design patterns used in real projects.,intermediate,3 weeks,699,Junior Backend Developer|Backend Developer
+6,API Security and Authentication,Implement JWT OAuth2 and token-based authentication. Secure your APIs against common vulnerabilities.,intermediate,3 weeks,899,API Developer|Backend Developer
+7,Production Backend Engineering,Learn database optimization caching deployment and monitoring for production systems.,advanced,6 weeks,1499,Backend Developer
+8,Complete Backend Developer Path,Comprehensive course covering Python Django REST APIs and production deployment.,beginner,12 weeks,1999,Backend Developer Intern|Junior Backend Developer|API Developer
+9,Django Advanced Features,Master middleware signals custom commands and async views in Django.,advanced,4 weeks,999,Junior Django Developer|Backend Developer
+10,Database Design and Optimization,Learn database design normalization indexing and query optimization for high-performance backends.,intermediate,4 weeks,899,Junior Backend Developer|Backend Developer

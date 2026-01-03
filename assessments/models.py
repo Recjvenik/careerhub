@@ -6,13 +6,27 @@ class CareerPath(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     min_score = models.IntegerField()
-    required_skills = models.JSONField(help_text="List of required skills")
+    required_skills = models.JSONField(help_text="List of required skills", default=list, blank=True)
 
     def __str__(self):
         return self.title
 
+
+class CareerRequiredSkill(models.Model):
+    LEVEL_CHOICES = (
+        ('basic', 'Basic'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    )
+    career = models.ForeignKey(CareerPath, on_delete=models.CASCADE, related_name='skill_requirements')
+    skill_tag = models.CharField(max_length=100)
+    required_level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='basic')
+    
+    class Meta:
+        unique_together = ['career', 'skill_tag']
+    
     def __str__(self):
-        return self.title
+        return f"{self.career.title} - {self.skill_tag} ({self.required_level})"
 
 class Question(models.Model):
     CATEGORY_CHOICES = (

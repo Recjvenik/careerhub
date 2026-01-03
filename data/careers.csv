@@ -1,0 +1,6 @@
+career_id,career_title,career_description,min_score
+1,Backend Developer Intern,Entry-level position focusing on learning backend development with Python and Django. Work on bug fixes and simple feature implementations under senior guidance.,40
+2,Junior Backend Developer,Build and maintain REST APIs using Django/DRF. Handle database operations and implement business logic. 1-2 years experience or strong fundamentals required.,55
+3,API Developer,Specialize in designing and building RESTful APIs. Focus on API documentation and integration with third-party services. Strong understanding of HTTP and REST principles needed.,60
+4,Junior Django Developer,Full-stack Django development including models views and templates. Build web applications from scratch. Requires solid Django and Python fundamentals.,65
+5,Backend Developer,Production-ready backend development. Handle database optimization and caching and performance tuning. Expected to write scalable and maintainable code.,75

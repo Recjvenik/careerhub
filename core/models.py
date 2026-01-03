@@ -8,21 +8,30 @@ class State(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=100)
-    state = models.ForeignKey(State, on_delete=models.CASCADE, related_name='cities')
 
     def __str__(self):
         return self.name
 
+class CityState(models.Model):
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='city_states')
+    state = models.ForeignKey(State, on_delete=models.CASCADE, related_name='city_states')
+
+    class Meta:
+        unique_together = ['city', 'state']
+
+    def __str__(self):
+        return f"{self.city.name} - {self.state.name}"
+
 class College(models.Model):
-    name = models.CharField(max_length=255)
-    short_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,default=None)
+    short_name = models.CharField(max_length=255,default=None)
 
     def __str__(self):
         return self.name
 
 class Branch(models.Model):
-    name = models.CharField(max_length=255)
-    short_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,default=None)
+    short_name = models.CharField(max_length=255,default=None)
 
     def __str__(self):
         return self.name

@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import State, City, College, Branch
+from .models import State, City, College, Branch, CityState
 
 def search_states(request):
     query = request.GET.get('q', '')
@@ -9,9 +9,14 @@ def search_states(request):
 def search_cities(request):
     query = request.GET.get('q', '')
     state_id = request.GET.get('state_id')
-    cities = City.objects.filter(name__icontains=query)
+    
     if state_id:
-        cities = cities.filter(state_id=state_id)
+        # Get cities mapped to the selected state via CityState
+        city_ids = CityState.objects.filter(state_id=state_id).values_list('city_id', flat=True)
+        cities = City.objects.filter(id__in=city_ids, name__icontains=query)
+    else:
+        cities = City.objects.filter(name__icontains=query)
+    
     cities = cities.values('id', 'name')[:10]
     return JsonResponse(list(cities), safe=False)
 

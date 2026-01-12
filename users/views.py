@@ -200,7 +200,8 @@ def dashboard_view(request):
 
 @login_required
 def profile_view(request):
-    user = request.user
+    # Prefetch related objects to avoid N+1 queries in template
+    user = CustomUser.objects.select_related('college', 'branch', 'city', 'state').get(pk=request.user.pk)
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, instance=user)
         if form.is_valid():
@@ -218,8 +219,8 @@ def profile_view(request):
     else:
         form = ProfileUpdateForm(instance=user)
 
-    # Calculate profile completion
-    fields = ['full_name', 'email', 'mobile', 'gender', 'college', 'branch', 'city', 'state']
+    # Calculate profile completion - use _id for ForeignKey fields to avoid extra DB queries
+    fields = ['full_name', 'email', 'mobile', 'gender', 'college_id', 'branch_id', 'city_id', 'state_id']
     filled_fields = 0
     for field in fields:
         if getattr(user, field):
@@ -229,5 +230,6 @@ def profile_view(request):
 
     return render(request, 'users/profile.html', {
         'form': form,
-        'completion_percentage': completion_percentage
+        'completion_percentage': completion_percentage,
+        'user': user  # Pass prefetched user to avoid extra queries in template
     })

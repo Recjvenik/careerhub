@@ -150,7 +150,7 @@ class ProfileUpdateForm(forms.ModelForm):
                 'placeholder': 'Enter mobile number'
             }),
             'gender': forms.Select(attrs={
-                'class': 'block w-full rounded-md border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+                'class': 'block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 appearance-none bg-white cursor-pointer select-arrow'
             }),
             'college': forms.Select(attrs={
                 'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
@@ -172,16 +172,35 @@ class ProfileUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Initialize choices for foreign keys to allow validation if data is present
-        # but for AJAX select2/custom implementation, we might need to handle this dynamically.
-        # For now, we'll populate with all objects or handle it in the view/template.
-        # However, for performance with large datasets, we shouldn't load all.
-        # But since we have dummy data (10 rows), it's fine to load all for now.
-        # from core.models import College, Branch, City, State
-        # self.fields['college'].queryset = College.objects.all()
-        # self.fields['branch'].queryset = Branch.objects.all()
-        # self.fields['city'].queryset = City.objects.all()
-        # self.fields['state'].queryset = State.objects.all()
+        from core.models import College, Branch, City, State
+        
+        # Check if this is a POST request (data is submitted)
+        data = args[0] if args else kwargs.get('data')
+        
+        if data:
+            # POST request - allow submitted values for validation
+            college_id = data.get('college')
+            branch_id = data.get('branch')
+            state_id = data.get('state')
+            city_id = data.get('city')
+            
+            self.fields['college'].queryset = College.objects.filter(id=college_id) if college_id else College.objects.none()
+            self.fields['branch'].queryset = Branch.objects.filter(id=branch_id) if branch_id else Branch.objects.none()
+            self.fields['state'].queryset = State.objects.filter(id=state_id) if state_id else State.objects.none()
+            self.fields['city'].queryset = City.objects.filter(id=city_id) if city_id else City.objects.none()
+        else:
+            # GET request - empty querysets (hidden selects, using AJAX search)
+            self.fields['college'].queryset = College.objects.none()
+            self.fields['branch'].queryset = Branch.objects.none()
+            self.fields['state'].queryset = State.objects.none()
+            self.fields['city'].queryset = City.objects.none()
+        
+        # Make these fields not required at form level
+        self.fields['college'].required = False
+        self.fields['branch'].required = False
+        self.fields['state'].required = False
+        self.fields['city'].required = False
+
 
     def clean_mobile(self):
         mobile = self.cleaned_data.get('mobile')

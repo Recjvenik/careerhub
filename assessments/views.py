@@ -8,8 +8,8 @@ import json
 @login_required
 def start_assessment(request):
     user = request.user
-    # Check profile completion
-    required_fields = ['full_name', 'email', 'mobile', 'college', 'branch', 'city', 'state']
+    # Check profile completion - use _id fields for ForeignKey to avoid extra DB queries
+    required_fields = ['full_name', 'email', 'mobile', 'college_id', 'branch_id', 'city_id', 'state_id']
     if not all(getattr(user, field) for field in required_fields):
         messages.warning(request, "Please complete your profile before starting the assessment.")
         return redirect('profile')

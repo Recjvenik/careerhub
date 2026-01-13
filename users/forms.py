@@ -152,22 +152,10 @@ class ProfileUpdateForm(forms.ModelForm):
             'gender': forms.Select(attrs={
                 'class': 'block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 appearance-none bg-white cursor-pointer select-arrow'
             }),
-            'college': forms.Select(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                'data-url': '/core/api/colleges/'
-            }),
-            'branch': forms.Select(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                'data-url': '/core/api/branches/'
-            }),
-            'city': forms.Select(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                'data-url': '/core/api/cities/'
-            }),
-            'state': forms.Select(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-                'data-url': '/core/api/states/'
-            }),
+            'college': forms.HiddenInput(),
+            'branch': forms.HiddenInput(),
+            'city': forms.HiddenInput(),
+            'state': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
@@ -195,11 +183,9 @@ class ProfileUpdateForm(forms.ModelForm):
             self.fields['state'].queryset = State.objects.none()
             self.fields['city'].queryset = City.objects.none()
         
-        # Make these fields not required at form level
-        self.fields['college'].required = False
-        self.fields['branch'].required = False
-        self.fields['state'].required = False
-        self.fields['city'].required = False
+        # Make all fields required
+        for field in self.fields:
+            self.fields[field].required = True
 
 
     def clean_mobile(self):

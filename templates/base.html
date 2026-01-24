@@ -51,7 +51,7 @@
                 <!-- <button class="text-sm font-medium text-gray-600 hover:text-gray-900">Hi</button> -->
 
                 <!-- Gender-based SVG Avatar -->
-                {% if user.gender == 'Female' %}
+                {% if user.gender == 'Male' %}
                 <a href="{% url 'profile' %}" class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         class="w-5 h-5 text-pink-600">
@@ -134,11 +134,13 @@
         {% block content %}{% endblock %}
     </main>
 
+    {% block footer %}
     <footer class="bg-gray-50 border-t border-gray-100 py-12 mt-20">
         <div class="container mx-auto px-4 text-center">
             <p class="text-gray-500 text-sm">© 2026 Karyo. All rights reserved.</p>
         </div>
     </footer>
+    {% endblock %}
 </body>
 
 </html>

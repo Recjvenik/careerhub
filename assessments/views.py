@@ -13,7 +13,7 @@ def start_assessment(request):
     if not all(getattr(user, field) for field in required_fields):
         messages.warning(request, "Please complete your profile before starting the assessment.")
         return redirect('profile')
-
+    Assessment.objects.filter(user=user, status='completed').delete()
     # Check if assessment already taken
     if Assessment.objects.filter(user=user, status='completed').exists():
         messages.info(request, "You have already completed the assessment.")
@@ -21,6 +21,7 @@ def start_assessment(request):
 
     if request.method == 'POST':
         # Clear previous incomplete assessments? Or just create new one.
+        Assessment.objects.filter(user=user, status='incomplete').delete()
         # For now, create new.
         assessment = Assessment.objects.create(user=request.user)
         return redirect('question_view', assessment_id=assessment.id, question_index=0)
@@ -30,9 +31,10 @@ def start_assessment(request):
 def question_view(request, assessment_id, question_index):
     assessment = get_object_or_404(Assessment, id=assessment_id, user=request.user)
     questions = Question.objects.filter(category='technical')[:10] # Filter by category if needed
-    print('questions: ', questions.values()[0])
+    print('questions: ', questions.values())
 
     if question_index >= len(questions):
+        print('question_index >= len(questions)', question_index, len(questions))
         return redirect('submit_assessment', assessment_id=assessment.id)
         
     question = questions[question_index]

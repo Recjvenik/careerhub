@@ -241,13 +241,8 @@
                 if (val.length >= 3) {
                     fetchResults(val);
                 } else if (val.length === 0) {
-                    // Optional: clear results if empty? Or show default?
-                    // User said "initial only show 10", implies empty -> show 10.
-                    // But if user types 1 char and deletes, it goes back to 0.
                     fetchResults('');
                 } else {
-                    // 1 or 2 chars -> hide or do nothing?
-                    // Usually better to hide if not enough chars
                     $(resultsId).addClass('hidden');
                 }
             }, 300);

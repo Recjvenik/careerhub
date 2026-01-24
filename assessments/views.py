@@ -168,7 +168,18 @@ def submit_assessment(request, assessment_id):
 def assessment_result(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id, user=request.user)
     
+    # Fetch course bundles matching user's degree
+    from courses.models import CourseBundle
+    course_bundles = []
+    if request.user.degree:
+        course_bundles = CourseBundle.objects.filter(
+            degrees=request.user.degree,
+            is_active=True
+        ).distinct()
+    
     return render(request, 'assessments/result.html', {
         'assessment': assessment,
-        'result': assessment.result_data
+        'result': assessment.result_data,
+        'course_bundles': course_bundles,
     })
+

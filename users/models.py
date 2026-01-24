@@ -12,6 +12,7 @@ class CustomUser(AbstractUser):
     gender = models.CharField(max_length=20, blank=True, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
     college = models.ForeignKey('core.College', on_delete=models.SET_NULL, null=True, blank=True)
     branch = models.ForeignKey('core.Branch', on_delete=models.SET_NULL, null=True, blank=True)
+    degree = models.ForeignKey('core.Degree', on_delete=models.SET_NULL, null=True, blank=True)
     city = models.ForeignKey('core.City', on_delete=models.SET_NULL, null=True, blank=True)
     state = models.ForeignKey('core.State', on_delete=models.SET_NULL, null=True, blank=True)
     language_pref = models.CharField(max_length=10, default='en')

@@ -201,7 +201,7 @@ def dashboard_view(request):
 @login_required
 def profile_view(request):
     # Prefetch related objects to avoid N+1 queries in template
-    user = CustomUser.objects.select_related('college', 'branch', 'city', 'state').get(pk=request.user.pk)
+    user = CustomUser.objects.select_related('college', 'branch', 'degree', 'city', 'state').get(pk=request.user.pk)
     if request.method == 'POST':
         form = ProfileUpdateForm(request.POST, instance=user)
         if form.is_valid():
@@ -220,7 +220,7 @@ def profile_view(request):
         form = ProfileUpdateForm(instance=user)
 
     # Calculate profile completion - use _id for ForeignKey fields to avoid extra DB queries
-    fields = ['full_name', 'email', 'mobile', 'gender', 'college_id', 'branch_id', 'city_id', 'state_id']
+    fields = ['full_name', 'email', 'mobile', 'gender', 'degree_id', 'college_id', 'branch_id', 'city_id', 'state_id']
     filled_fields = 0
     for field in fields:
         if getattr(user, field):
@@ -233,3 +233,18 @@ def profile_view(request):
         'completion_percentage': completion_percentage,
         'user': user  # Pass prefetched user to avoid extra queries in template
     })
+
+from django.http import JsonResponse
+from core.models import Degree
+
+def search_degrees(request):
+    query = request.GET.get('q', '')
+    if len(query) >= 1:
+        degrees = Degree.objects.filter(name__icontains=query)[:10]
+        results = [{'id': d.id, 'name': f"{d.name} - {d.full_name}"} for d in degrees]
+    else:
+        # Return all degrees when no query (for dropdown)
+        degrees = Degree.objects.all()[:10]
+        results = [{'id': d.id, 'name': f"{d.name} - {d.full_name}"} for d in degrees]
+    return JsonResponse(results, safe=False)
+

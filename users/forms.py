@@ -135,7 +135,7 @@ class ResetPasswordForm(forms.Form):
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ['full_name', 'email', 'mobile', 'gender', 'college', 'branch', 'city', 'state']
+        fields = ['full_name', 'email', 'mobile', 'gender', 'degree', 'college', 'branch', 'city', 'state']
         widgets = {
             'full_name': forms.TextInput(attrs={
                 'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
@@ -154,13 +154,14 @@ class ProfileUpdateForm(forms.ModelForm):
             }),
             'college': forms.HiddenInput(),
             'branch': forms.HiddenInput(),
+            'degree': forms.HiddenInput(),
             'city': forms.HiddenInput(),
             'state': forms.HiddenInput(),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        from core.models import College, Branch, City, State
+        from core.models import College, Branch, City, State, Degree
         
         # Check if this is a POST request (data is submitted)
         data = args[0] if args else kwargs.get('data')
@@ -169,17 +170,20 @@ class ProfileUpdateForm(forms.ModelForm):
             # POST request - allow submitted values for validation
             college_id = data.get('college')
             branch_id = data.get('branch')
+            degree_id = data.get('degree')
             state_id = data.get('state')
             city_id = data.get('city')
             
             self.fields['college'].queryset = College.objects.filter(id=college_id) if college_id else College.objects.none()
             self.fields['branch'].queryset = Branch.objects.filter(id=branch_id) if branch_id else Branch.objects.none()
+            self.fields['degree'].queryset = Degree.objects.filter(id=degree_id) if degree_id else Degree.objects.none()
             self.fields['state'].queryset = State.objects.filter(id=state_id) if state_id else State.objects.none()
             self.fields['city'].queryset = City.objects.filter(id=city_id) if city_id else City.objects.none()
         else:
             # GET request - empty querysets (hidden selects, using AJAX search)
             self.fields['college'].queryset = College.objects.none()
             self.fields['branch'].queryset = Branch.objects.none()
+            self.fields['degree'].queryset = Degree.objects.none()
             self.fields['state'].queryset = State.objects.none()
             self.fields['city'].queryset = City.objects.none()
         

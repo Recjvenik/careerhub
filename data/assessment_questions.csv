@@ -1,31 +1,12 @@
-question_id,question_text,option_a,option_b,option_c,option_d,correct_option,skill_tag,difficulty
-1,What is the main purpose of Python indentation?,To improve performance,To define code blocks,To separate functions,To avoid syntax errors only,B,python_basics,easy
-2,Which data type in Python is immutable?,List,Set,Dictionary,Tuple,D,python_core,easy
-3,What is a Python list comprehension?,A way to create lists using a compact syntax,A method to compress data,A debugging tool,A type of loop,A,python_core,easy
-4,Which keyword is used to define a function in Python?,function,def,define,func,B,python_basics,easy
-5,What does the 'self' parameter represent in a Python class?,The class itself,The current instance of the class,A global variable,A static method,B,python_core,medium
-6,What is the purpose of __init__ method in Python classes?,To delete an object,To initialize object attributes,To define class methods,To import modules,B,python_core,medium
-7,Which Python module is commonly used for HTTP requests?,request,http,requests,urllib,C,advanced_python,medium
-8,What is a Python decorator?,A way to add CSS to code,A function that modifies another function,A type of loop,A database query,B,advanced_python,medium
-9,What is the purpose of virtual environments in Python?,To run Python faster,To isolate project dependencies,To create virtual machines,To compress code,B,python_basics,easy
-10,Which Django component handles database queries?,Views,Templates,ORM,Middleware,C,django_core,medium
-11,What is the purpose of Django migrations?,To backup the database,To create and modify database schema,To handle user authentication,To serve static files,B,django_core,medium
-12,Which file contains Django URL routing configurations?,models.py,views.py,urls.py,settings.py,C,django_core,easy
-13,What is a Django QuerySet?,A list of SQL queries,A lazy database lookup object,A database connection,A form validation result,B,django_orm,medium
-14,What is the benefit of using QuerySet filtering instead of Python loops?,Cleaner syntax,Better database performance,Less memory usage in Python,All of the above,D,django_orm,medium
-15,How do you filter objects in Django ORM?,Model.objects.filter(),Model.filter.objects(),Model.get.filter(),Model.query.filter(),A,django_orm,easy
-16,What does select_related() do in Django ORM?,Selects random records,Reduces database queries by joining tables,Selects only specific columns,Creates a new table,B,django_orm,hard
-17,Why is pagination important in APIs?,Improves UI design,Reduces database size,Prevents large response payloads,Avoids authentication,C,api_performance,medium
-18,Which HTTP method is used to update an existing resource?,GET,POST,PUT,DELETE,C,api_basics,easy
-19,What status code indicates a successful POST request that created a resource?,200 OK,201 Created,204 No Content,301 Moved,B,api_basics,medium
-20,What does REST stand for?,Remote Execution State Transfer,Representational State Transfer,Request State Transfer,Resource State Transfer,B,api_basics,easy
-21,Which HTTP header is used for API authentication tokens?,Content-Type,Authorization,Accept,Cookie,B,api_basics,medium
-22,What is the purpose of serializers in Django REST Framework?,To compress data,To convert complex data types to JSON/XML,To encrypt passwords,To validate user input only,B,api_basics,medium
-23,Which practice helps in handling slow APIs in production?,Adding print statements,Using caching and query optimization,Increasing server RAM only,Disabling logs,B,production_backend,hard
-24,What is N+1 query problem in Django ORM?,Running N queries plus 1 extra due to lazy loading,Having N+1 database tables,A syntax error,A migration conflict,A,production_backend,hard
-25,What is the purpose of database indexing?,To backup data,To speed up query performance,To encrypt data,To compress storage,B,production_backend,medium
-26,What is connection pooling in a production database?,Sharing database connections across requests,Creating new connections for each query,Closing all connections,Encrypting connections,A,production_backend,hard
-27,What is the purpose of rate limiting in APIs?,To slow down the application,To prevent abuse and ensure fair usage,To increase response time,To reduce server costs,B,api_performance,medium
-28,How do you optimize N+1 queries in Django?,Using raw SQL,Using select_related() or prefetch_related(),Adding more indexes,Increasing database connections,B,production_backend,hard
-29,What is API throttling?,Limiting request rates per user/IP,Speeding up API responses,Compressing API data,Encrypting API traffic,A,api_performance,medium
-30,What is the purpose of Django middleware?,To style templates,To process requests/responses globally,To create database tables,To compile Python code,B,advanced_python,medium
+text,options,correct_option,category,skill_tag,difficulty
+"Which activity do you enjoy more?","[""A. Solving logical problems"",""B. Writing, and reading"",""C. Interacting, and helping people""]",,psychometric,Interest,easy
+"How do you prefer to work?","[""A. Independently with minimal supervision"",""B. In teams with discussion and collaboration""]",,psychometric,Work Style,easy
+"Find the next number: 2, 6, 12, 20, ?","[""A. 24"",""B. 26"",""C. 28"",""D. 30""]","D. 30",aptitude,Number Series,medium
+"If the time complexity of an algorithm is O(n square), what happens when the input size doubles?","[""A. Execution time doubles"",""B. Execution time increases by 3 times"",""C. Execution time increases by 4 times"",""D. Execution time remains the same""]","C. Execution time increases by 4 times",technical,Time Complexity,medium
+"Which data structure is best suited for implementing a stack?","[""A. Queue"",""B. Linked List"",""C. Tree"",""D. Graph""]","B. Linked List",technical,Data Structures,easy
+"The primary goal of database normalization is to:","[""A. Increase data redundancy"",""B. Reduce data redundancy"",""C. Improve query speed only"",""D. Encrypt data""]","B. Reduce data redundancy",technical,Database,medium
+"If a program compiles successfully but gives incorrect output, the best first step is to","[""A. Rewrite the entire code"",""B. Check logic and edge cases"",""C. Increase system memory"",""D. Change the programming language""]","B. Check logic and edge cases",technical,Debugging,easy
+"How do you feel about unclear instructions?","[""A. I enjoy figuring things out"",""B. I prefer structure and clarity""]",,psychometric,Problem Approach,easy
+"Which tools are you most comfortable with?","[""A. Excel / Numbers / Accounting tools"",""B. Writing / Presentation tools"",""C. Programming / Data tools""]",,psychometric,Tools Preference,easy
+"When learning something new, you prefer:","[""A. Tutorials and practice"",""B. Reading and theory"",""C. Discussion and examples""]",,psychometric,Learning Style,easy
+"Correct this sentence: She did not knew about the meeting schedule.","[""A. She dp not know about the meeting schedule"",""B. She did not know about meeting schedule"",""C. She do not knew the meeting schedule"",""D. She did not knew about meeting schedule""]","B. She did not know about meeting schedule",aptitude,Grammar,easy

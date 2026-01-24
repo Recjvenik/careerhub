@@ -112,7 +112,6 @@
                             </div>
                         </div>
                         {% if form.gender.errors %}
-                        <p class="text-red-600 text-xs mt-1">{{ form.gender.errors.0 }}</p>
                         {% endif %}
                     </div>
 
@@ -176,6 +175,22 @@
                         </div>
                     </div>
 
+                    <!-- Degree (after branch) -->
+                    <div class="col-span-2 sm:col-span-3">
+                        <label for="degree-search"
+                            class="block text-sm font-medium leading-5 text-gray-900">Degree</label>
+                        <div class="mt-1 sm:mt-2 relative">
+                            <input type="text" id="degree-search"
+                                class="block w-full rounded-md border-0 py-1.5 px-2 sm:px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm leading-6"
+                                placeholder="Search Degree..."
+                                value="{% if user.degree %}{{ user.degree.name }} - {{ user.degree.full_name }}{% endif %}">
+                            {{ form.degree }}
+                            <div id="degree-results"
+                                class="absolute z-10 w-full bg-white border border-gray-200 rounded-md mt-1 hidden max-h-60 overflow-y-auto shadow-lg">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Desktop buttons (hidden on mobile) -->
@@ -202,7 +217,7 @@
 <script>
     $(document).ready(function () {
         // Hide actual selects
-        $('#id_college, #id_branch, #id_state, #id_city').hide();
+        $('#id_college, #id_branch, #id_degree, #id_state, #id_city').hide();
 
         function debounce(func, wait) {
             let timeout;
@@ -284,6 +299,7 @@
 
         setupSearch('#college-search', '#college-results', '#id_college', '/core/api/colleges/');
         setupSearch('#branch-search', '#branch-results', '#id_branch', '/core/api/branches/');
+        setupSearch('#degree-search', '#degree-results', '#id_degree', '/auth/search-degrees/');
         setupSearch('#state-search', '#state-results', '#id_state', '/core/api/states/');
         setupSearch('#city-search', '#city-results', '#id_city', '/core/api/cities/', 'q', function () {
             return { state_id: $('#id_state').val() };

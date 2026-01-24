@@ -1,204 +1,95 @@
 import csv
+import json
 from django.core.management.base import BaseCommand
 from assessments.models import Question, CareerPath
-from courses.models import Course, CourseSkill
-
 
 class Command(BaseCommand):
-    help = 'Import assessment, career, and course data from CSV files'
+    help = 'Import assessment questions and career paths from CSV files'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--clear', action='store_true', help='Clear existing data before import')
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.NOTICE('Starting data import...'))
+        if options.get('clear'):
+            self.stdout.write('Clearing existing data...')
+            Question.objects.all().delete()
+            CareerPath.objects.all().delete()
         
-        # Clear existing data first
-        self.stdout.write('Clearing existing data...')
-        Question.objects.all().delete()
-        CareerPath.objects.all().delete()
-        CourseSkill.objects.all().delete()
-        Course.objects.all().delete()
-        
-        # Import Assessment Questions
         self.import_questions()
-        
-        # Import Careers
         self.import_careers()
         
-        # Import Career Required Skills (into JSONField)
-        self.import_career_required_skills()
-        
-        # Import Course Bundles
-        self.import_courses()
-        
-        # Import Course Skill Mappings
-        self.import_course_skills()
-        
-        self.stdout.write(self.style.SUCCESS('All data imported successfully!'))
+        self.stdout.write(self.style.SUCCESS('Import completed!'))
 
     def import_questions(self):
-        csv_file = 'data/assessment_questions.csv'
-        self.stdout.write(f'Importing questions from {csv_file}...')
-        
-        created = 0
+        """Import questions from CSV. Options field should be JSON array."""
+        csv_path = 'data/assessment_questions.csv'
         
         try:
-            with open(csv_file, 'r', encoding='utf-8') as file:
+            with open(csv_path, 'r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
+                created_count = 0
+                
                 for row in reader:
-                    # Store options as dictionary with keys A, B, C, D
-                    options = {
-                        'A': row['option_a'],
-                        'B': row['option_b'],
-                        'C': row['option_c'],
-                        'D': row['option_d']
-                    }
+                    # Parse options - expects JSON array like ["A. Option 1", "B. Option 2"]
+                    options_list = json.loads(row['options'])
+                    
+                    # Convert list to dictionary for template consistency
+                    options = {}
+                    if isinstance(options_list, list):
+                        for opt in options_list:
+                            # Split by first dot and space to separate Key and Value
+                            # e.g. "A. Option Text" -> "A", "Option Text"
+                            parts = opt.split('.', 1)
+                            if len(parts) == 2:
+                                key = parts[0].strip()
+                                value = parts[1].strip()
+                                options[key] = value
+                            else:
+                                # Fallback if format doesn't match
+                                options[opt] = opt
+                    else:
+                        # Fallback if already dict or something else
+                        options = options_list
                     
                     Question.objects.create(
-                        text=row['question_text'],
+                        text=row['text'],
                         options=options,
-                        correct_option=row['correct_option'].upper(),
-                        category='technical',
-                        skill_tag=row['skill_tag'],
-                        difficulty=row['difficulty']
+                        correct_option=row['correct_option'] if row['correct_option'] else None,
+                        category=row['category'],
+                        skill_tag=row.get('skill_tag', ''),
+                        difficulty=row.get('difficulty', 'medium')
                     )
-                    created += 1
-                        
-            self.stdout.write(self.style.SUCCESS(f'  Questions: {created} created'))
+                    created_count += 1
+            
+            self.stdout.write(self.style.SUCCESS(f'Imported {created_count} questions'))
         except FileNotFoundError:
-            self.stdout.write(self.style.ERROR(f'  File not found: {csv_file}'))
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'  Error: {str(e)}'))
+            self.stdout.write(self.style.WARNING(f'Questions file not found: {csv_path}'))
 
     def import_careers(self):
-        csv_file = 'data/careers.csv'
-        self.stdout.write(f'Importing careers from {csv_file}...')
-        
-        created = 0
+        """Import career paths from CSV."""
+        csv_path = 'data/careers.csv'
         
         try:
-            with open(csv_file, 'r', encoding='utf-8') as file:
+            with open(csv_path, 'r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
+                created_count = 0
+                
                 for row in reader:
-                    CareerPath.objects.create(
+                    required_skills = []
+                    if row.get('required_skills'):
+                        required_skills = [s.strip() for s in row['required_skills'].split(';')]
+                    
+                    CareerPath.objects.update_or_create(
                         career_id=row['career_id'],
-                        title=row['career_title'],
-                        description=row['career_description'],
-                        min_score=int(row['min_score']),
-                        required_skills=[]  # Will be populated by import_career_required_skills
+                        defaults={
+                            'title': row['career_title'],
+                            'description': row.get('career_description', ''),
+                            'min_score': int(row.get('min_score', 0)),
+                            'required_skills': required_skills,
+                        }
                     )
-                    created += 1
-                        
-            self.stdout.write(self.style.SUCCESS(f'  Careers: {created} created'))
-        except FileNotFoundError:
-            self.stdout.write(self.style.ERROR(f'  File not found: {csv_file}'))
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'  Error: {str(e)}'))
-
-    def import_career_required_skills(self):
-        """Import career required skills into the JSONField on CareerPath"""
-        csv_file = 'data/career_required_skills.csv'
-        self.stdout.write(f'Importing career required skills from {csv_file}...')
-        
-        # Build skills by career_id (as simple list like seed pattern)
-        career_skills = {}
-        
-        try:
-            with open(csv_file, 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    career_id = row['career_id']
-                    if career_id not in career_skills:
-                        career_skills[career_id] = []
-                    career_skills[career_id].append(row['skill_tag'])
+                    created_count += 1
             
-            # Update each career with its skills
-            updated = 0
-            for career_id, skills in career_skills.items():
-                try:
-                    career = CareerPath.objects.get(career_id=career_id)
-                    career.required_skills = skills  # Simple list like seed pattern
-                    career.save()
-                    updated += 1
-                except CareerPath.DoesNotExist:
-                    pass
-                        
-            self.stdout.write(self.style.SUCCESS(f'  Career Skills: {updated} careers updated'))
+            self.stdout.write(self.style.SUCCESS(f'Imported {created_count} career paths'))
         except FileNotFoundError:
-            self.stdout.write(self.style.ERROR(f'  File not found: {csv_file}'))
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'  Error: {str(e)}'))
-
-    def import_courses(self):
-        csv_file = 'data/course_bundles.csv'
-        self.stdout.write(f'Importing courses from {csv_file}...')
-        
-        created = 0
-        
-        try:
-            with open(csv_file, 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    # Parse pipe-separated fields
-                    programs = [p.strip() for p in row['programs_included'].split('|')]
-                    ideal_for = [i.strip() for i in row['ideal_for'].split('|')]
-                    job_roles = [j.strip() for j in row['job_roles'].split('|')]
-                    
-                    Course.objects.create(
-                        title=row['course_title'],
-                        slug=row['slug'],
-                        short_description=row['short_description'],
-                        description=row['description'],
-                        duration=row['duration'],
-                        price=float(row['price']),
-                        original_price_inr=float(row['original_price_inr']),
-                        level=row['level'],
-                        language=['English'],
-                        programs_included=programs,
-                        ideal_for=ideal_for,
-                        job_roles=job_roles,
-                        is_active=True
-                    )
-                    created += 1
-                        
-            self.stdout.write(self.style.SUCCESS(f'  Courses: {created} created'))
-        except FileNotFoundError:
-            self.stdout.write(self.style.ERROR(f'  File not found: {csv_file}'))
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'  Error: {str(e)}'))
-
-    def import_course_skills(self):
-        csv_file = 'data/course_skill_mapping.csv'
-        self.stdout.write(f'Importing course skill mappings from {csv_file}...')
-        
-        created = 0
-        
-        # Build course lookup by id from course_bundles
-        course_id_map = {}
-        try:
-            with open('data/course_bundles.csv', 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    course_id_map[row['course_id']] = row['slug']
-        except:
-            pass
-        
-        courses = {c.slug: c for c in Course.objects.all()}
-        
-        try:
-            with open(csv_file, 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    slug = course_id_map.get(row['course_id'])
-                    if not slug or slug not in courses:
-                        continue
-                    
-                    CourseSkill.objects.create(
-                        course=courses[slug],
-                        skill_tag=row['skill_tag']
-                    )
-                    created += 1
-                        
-            self.stdout.write(self.style.SUCCESS(f'  Course Skills: {created} created'))
-        except FileNotFoundError:
-            self.stdout.write(self.style.ERROR(f'  File not found: {csv_file}'))
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f'  Error: {str(e)}'))
+            self.stdout.write(self.style.WARNING(f'Careers file not found: {csv_path}'))

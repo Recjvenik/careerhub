@@ -1,0 +1,56 @@
+name,full_name,category
+Diploma,Diploma,Vocational & Diploma
+B.A.,Bachelor of Arts,Arts & Humanities
+B.A.(Hons),Bachelor of Arts (Honours),Arts & Humanities
+M.A.,Master of Arts,Arts & Humanities
+B.Com,Bachelor of Commerce,Commerce & Management
+B.Com(Hons),Bachelor of Commerce (Honours),Commerce & Management
+M.Com,Master of Commerce,Commerce & Management
+MBA,Master of Business Administration,Commerce & Management
+Executive MBA,Executive Master of Business Administration,Commerce & Management
+B.B.A,Bachelor of Business Administration,Commerce & Management
+B.M.S,Bachelor of Management Studies,Commerce & Management
+M.M.S,Master of Management Studies,Commerce & Management
+B.Sc.,Bachelor of Science,Science
+B.Sc.(Hons),Bachelor of Science (Honours),Science
+M.Sc.,Master of Science,Science
+B.Stat,Bachelor of Statistics,Science
+M.Stat,Master of Statistics,Science
+B.E,Bachelor of Engineering,Engineering & Technology
+B.Tech,Bachelor of Technology,Engineering & Technology
+M.E,Master of Engineering,Engineering & Technology
+M.Tech,Master of Technology,Engineering & Technology
+B.Arch,Bachelor of Architecture,Design & Architecture
+M.Arch,Master of Architecture,Design & Architecture
+B.Des,Bachelor of Design,Design & Architecture
+M.Des,Master of Design,Design & Architecture
+B.C.A.,Bachelor of Computer Applications,Computer & IT
+M.C.A.,Master of Computer Applications,Computer & IT
+B.Tech M.Tech,Bachelor and Master of Technology,Engineering & Technology
+B.Tech MBA,Bachelor of Technology and MBA,Engineering & Technology
+B.Ed.,Bachelor of Education,Education
+M.Ed.,Master of Education,Education
+B.El.Ed.,Bachelor of Elementary Education,Education
+L.L.B,Bachelor of Laws,Law
+L.L.M,Master of Laws,Law
+B.A. L.L.B,Bachelor of Arts and Laws,Law
+B.Com.L.L.B,Bachelor of Commerce and Laws,Law
+M.B.B.S.,Bachelor of Medicine and Bachelor of Surgery,Medical & Health Sciences
+M.D.,Doctor of Medicine,Medical & Health Sciences
+B.D.S.,Bachelor of Dental Surgery,Medical & Health Sciences
+M.D.S.,Master of Dental Surgery,Medical & Health Sciences
+B.P.T.,Bachelor of Physiotherapy,Medical & Health Sciences
+M.P.T.,Master of Physiotherapy,Medical & Health Sciences
+B.Pharma,Bachelor of Pharmacy,Pharmacy
+M.Pharma,Master of Pharmacy,Pharmacy
+Pharm.D,Doctor of Pharmacy,Pharmacy
+B.J.,Bachelor of Journalism,Journalism & Media
+M.J.,Master of Journalism,Journalism & Media
+B.M.M.,Bachelor of Mass Media,Journalism & Media
+M.S.W.,Master of Social Work,Social Work
+B.S.W.,Bachelor of Social Work,Social Work
+B.Agri,Bachelor of Agriculture,Agriculture & Allied Sciences
+B.V.Sc.,Bachelor of Veterinary Science,Agriculture & Allied Sciences
+Ph.D,Doctor of Philosophy,Research & Doctorate
+M.Phil.,Master of Philosophy,Research & Doctorate
+D.Litt,Doctor of Literature,Research & Doctorate

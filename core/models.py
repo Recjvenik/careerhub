@@ -35,3 +35,26 @@ class Branch(models.Model):
 
     def __str__(self):
         return self.name
+
+class Degree(models.Model):
+    CATEGORY_CHOICES = [
+        ('Arts & Humanities', 'Arts & Humanities'),
+        ('Commerce & Management', 'Commerce & Management'),
+        ('Science', 'Science'),
+        ('Engineering & Technology', 'Engineering & Technology'),
+        ('Computer & IT', 'Computer & IT'),
+        ('Education', 'Education'),
+        ('Law', 'Law'),
+        ('Medical & Health Sciences', 'Medical & Health Sciences'),
+        ('Pharmacy', 'Pharmacy'),
+        ('Design & Architecture', 'Design & Architecture'),
+        ('Journalism & Media', 'Journalism & Media'),
+        ('Social Work', 'Social Work'),
+        ('Agriculture & Allied Sciences', 'Agriculture & Allied Sciences'),
+        ('Vocational & Diploma', 'Vocational & Diploma'),
+        ('Research & Doctorate', 'Research & Doctorate'),
+    ]
+
+    name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=255)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)

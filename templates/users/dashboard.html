@@ -9,7 +9,7 @@
 
             <!-- Welcome Section -->
             <div class="mb-10">
-                <h1 class="text-3xl font-bold text-gray-900">Welcome back, {{ user.full_name|default:user.username }}!
+                <h1 class="text-3xl font-bold text-gray-900">Welcome back, {{ user.full_name|default:user.email }}!
                 </h1>
                 <p class="text-gray-600 mt-2">Track your progress and manage your learning journey.</p>
             </div>
@@ -46,7 +46,7 @@
                         <p class="text-gray-600 mb-6">Take our AI-powered assessment to discover your ideal career path
                             and get personalized course recommendations.</p>
                         <a href="{% url 'start_assessment' %}"
-                            class="inline-block px-6 py-3 bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-all">Start
+                            class="inline-block px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-all">Start
                             Assessment</a>
                         {% endif %}
                     </div>
@@ -111,11 +111,11 @@
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
                         <div class="flex items-center gap-4 mb-6">
                             <div
-                                class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-500 font-bold text-xl">
-                                {{ user.full_name|first|default:user.username|first|upper }}
+                                class="w-12 h-12 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center text-gray-500 font-bold text-xl">
+                                {{ user.full_name|default:user.email|first|upper|default:"U" }}
                             </div>
                             <div>
-                                <div class="font-bold text-gray-900">{{ user.full_name|default:user.username }}</div>
+                                <div class="font-bold text-gray-900">{{ user.full_name|default:user.email }}</div>
                                 <div class="text-xs text-gray-500">{{ user.email }}</div>
                             </div>
                         </div>

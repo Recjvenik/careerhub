@@ -5,7 +5,7 @@ from .managers import CustomUserManager
 
 class CustomUser(AbstractUser):
     username = None
-    mobile = models.CharField(_('mobile number'), max_length=15, unique=True)
+    mobile = models.CharField(_('mobile number'), max_length=15, unique=True, blank=True, null=True)
     email = models.EmailField(_('email address'), unique=True, blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255, blank=True)
@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.mobile
+        return self.mobile or self.email or f"User {self.pk}"
 
 class OTP(models.Model):
     mobile = models.CharField(max_length=15)

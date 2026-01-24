@@ -1,9 +1,12 @@
 from django.contrib.auth.base_user import BaseUserManager
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, mobile, password=None, **extra_fields):
-        if not mobile:
-            raise ValueError('The Mobile number must be set')
+    def create_user(self, mobile=None, password=None, **extra_fields):
+        email = extra_fields.get('email')
+        if not mobile and not email:
+            raise ValueError('Either mobile number or email must be provided')
+        if email:
+            extra_fields['email'] = self.normalize_email(email)
         user = self.model(mobile=mobile, **extra_fields)
         user.set_password(password)
         user.save()

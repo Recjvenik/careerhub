@@ -175,16 +175,20 @@ def submit_assessment(request, assessment_id):
             if e not in psych_profile_traits:
                 psych_profile_traits.append(e)
 
-    # Tech Analysis
-    tech_score = int((tech_correct / tech_total) * 100) if tech_total > 0 else 0
+    # Tech Analysis (Enforce Min 70%)
+    raw_tech = int((tech_correct / tech_total) * 100) if tech_total > 0 else 0
+    tech_score = max(raw_tech, 70) if tech_total > 0 else 0
     
-    # Aptitude Analysis
-    apt_score = int((apt_correct / apt_total) * 100) if apt_total > 0 else 0
+    # Aptitude Analysis (Enforce Min 70%)
+    raw_apt = int((apt_correct / apt_total) * 100) if apt_total > 0 else 0
+    apt_score = max(raw_apt, 70) if apt_total > 0 else 0
 
     # Total Score
     scored_total = tech_total + apt_total
     scored_correct = tech_correct + apt_correct
-    total_score_pct = int((scored_correct / scored_total) * 100) if scored_total > 0 else 0
+    raw_total = int((scored_correct / scored_total) * 100) if scored_total > 0 else 0
+    total_score_pct = max(raw_total, 70) if scored_total > 0 else 0
+    
     assessment.score = total_score_pct
 
     result_data = {

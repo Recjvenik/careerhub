@@ -82,14 +82,25 @@
             </div>
             {% endif %}
 
-            <!-- Back Button -->
-            <div class="text-center mt-12">
-                <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 text-gray-500 text-sm font-medium hover:text-gray-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                    </svg>
-                    Back to Dashboard
-                </a>
+            <!-- Bottom Actions -->
+            <div class="mt-20">
+                <div class="flex flex-row items-center justify-center gap-3 w-full sm:w-auto mx-auto max-w-lg sm:max-w-none">
+                    <a href="{% url 'course_list' %}" class="flex-1 sm:flex-none justify-center group flex items-center gap-2 sm:gap-3 px-3 sm:px-8 py-3 sm:py-4 bg-white text-xs sm:text-base text-gray-900 border-2 border-gray-200 rounded-xl font-bold hover:border-blue-600 hover:text-blue-600 transition-all shadow-sm hover:shadow-md">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-blue-600 transition-colors hidden sm:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                        </svg>
+                        <span class="sm:hidden">Explore Courses</span>
+                        <span class="hidden sm:inline">Explore All Courses</span>
+                    </a>
+                    
+                    <a href="{% url 'dashboard' %}" class="flex-1 sm:flex-none justify-center flex items-center gap-2 text-xs sm:text-base text-gray-600 font-bold bg-gray-100 border-2 border-transparent px-3 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-gray-200 transition-colors">
+                        <svg class="w-4 h-4 sm:w-4 sm:h-4 text-gray-500 hidden sm:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                        </svg>
+                        <span class="sm:hidden">Dashboard</span>
+                        <span class="hidden sm:inline">Back to Dashboard</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

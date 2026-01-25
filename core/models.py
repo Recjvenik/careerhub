@@ -58,3 +58,4 @@ class Degree(models.Model):
     name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=255)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    is_tech = models.BooleanField(default=False)

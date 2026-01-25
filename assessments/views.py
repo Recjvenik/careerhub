@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Question, Assessment, UserResponse, CareerPath
 import json
+import random
+from collections import defaultdict
 
 @login_required
 def start_assessment(request):
@@ -12,6 +14,7 @@ def start_assessment(request):
     if not all(getattr(user, field) for field in required_fields):
         messages.warning(request, "Please complete your profile before starting the assessment.")
         return redirect('profile')
+
     Assessment.objects.filter(user=user, status='completed').delete()
     # Check if assessment already taken
     if Assessment.objects.filter(user=user, status='completed').exists():
@@ -19,31 +22,68 @@ def start_assessment(request):
         return redirect('dashboard')
 
     if request.method == 'POST':
-        # Clear previous incomplete assessments? Or just create new one.
-        Assessment.objects.filter(user=user, status='incomplete').delete()
-        # For now, create new.
-        assessment = Assessment.objects.create(user=request.user)
+        # Clear previous incomplete assessments
+        Assessment.objects.filter(user=user, status='pending').delete()
+        
+        # Determine Degree Type (Tech vs Non-Tech)
+        is_tech = False
+        if hasattr(user, 'degree') and user.degree:
+            is_tech = user.degree.is_tech
+            
+        all_qs = list(Question.objects.all())
+
+        by_category = defaultdict(list)
+        for q in all_qs:
+            by_category[q.category].append(q)
+
+        def pick(cat, n):
+            qs = by_category.get(cat, [])
+            return qs if len(qs) <= n else random.sample(qs, n)
+
+        if is_tech:
+            questions = (
+                pick('technical', 4) +
+                pick('aptitude', 1) +
+                pick('psychometric', 2)
+            )
+        else:
+            questions = (
+                pick('aptitude', 2) +
+                pick('psychometric', 5)
+            )
+
+        random.shuffle(questions)
+        question_ids = [q.id for q in questions]
+        
+        assessment = Assessment.objects.create(user=request.user, question_order=question_ids)
         return redirect('question_view', assessment_id=assessment.id, question_index=0)
     return render(request, 'assessments/start.html')
 
 @login_required
 def question_view(request, assessment_id, question_index):
     assessment = get_object_or_404(Assessment, id=assessment_id, user=request.user)
-    questions = Question.objects.filter(category='technical')[:10] # Filter by category if needed
-    print('questions: ', questions.values())
-
-    if question_index >= len(questions):
-        print('question_index >= len(questions)', question_index, len(questions))
+    
+    question_ids = assessment.question_order
+    total_questions = len(question_ids)
+    
+    if question_index >= total_questions:
         return redirect('submit_assessment', assessment_id=assessment.id)
         
-    question = questions[question_index]
+    # Get current question ID
+    try:
+        question_id = question_ids[question_index]
+    except IndexError:
+        return redirect('submit_assessment', assessment_id=assessment.id)
+        
+    question = get_object_or_404(Question, id=question_id)
     
     if request.method == 'POST':
         selected_option = request.POST.get('option')
-        UserResponse.objects.create(
+        # Update or create response
+        UserResponse.objects.update_or_create(
             assessment=assessment,
             question=question,
-            selected_option=selected_option
+            defaults={'selected_option': selected_option}
         )
         return redirect('question_view', assessment_id=assessment.id, question_index=question_index + 1)
 
@@ -51,7 +91,7 @@ def question_view(request, assessment_id, question_index):
         'assessment': assessment,
         'question': question,
         'index': question_index,
-        'total': len(questions)
+        'total': total_questions
     })
 
 @login_required
@@ -61,108 +101,99 @@ def submit_assessment(request, assessment_id):
          return redirect('assessment_result', assessment_id=assessment.id)
 
     assessment.status = 'completed'
-    
-    # 1. Calculate Score & Skill Accuracy
     responses = assessment.responses.all()
-    total_score = 0
-    skill_accuracy = {} # {skill_tag: {correct: 0, total: 0}}
+
+    # --- New Analysis Logic ---
+    tech_correct = 0
+    tech_total = 0
+    apt_correct = 0
+    apt_total = 0
+    
+    # Psychometric Counts
+    psych_profile_traits = []
+    
+    # Mapping Data (Text to Trait Logic)
+    # Using normalized keys (first few words) strictly matching provided JSON
+    PSYCH_MAPPING = {
+        "Which activity do you enjoy more": {
+            "A": "Analytical Thinking",
+            "B": "Verbal & Creative",
+            "C": "Social & Empathetic"
+        },
+        "How do you prefer to work": {
+            "A": "Independent Work Style",
+            "B": "Collaborative Work Style"
+        },
+        "How do you feel about unclear instructions": {
+            "A": "Explorative / Ambiguity Tolerant",
+            "B": "Structured / Process Driven"
+        },
+        "Which tools are you most comfortable with": {
+            "A": "Business & Operations",
+            "B": "Communication & Content",
+            "C": "Technical & Data"
+        },
+        "When learning something new, you prefer": {
+            "A": "Hands-on Learner",
+            "B": "Theoretical Learner",
+            "C": "Social Learner"
+        }
+    }
 
     for response in responses:
-        question = response.question
-        skill = question.skill_tag
-        
-        if skill not in skill_accuracy:
-            skill_accuracy[skill] = {'correct': 0, 'total': 0}
-        
-        skill_accuracy[skill]['total'] += 1
-        
-        if response.selected_option == question.correct_option:
-            total_score += 10 # Simple scoring
-            skill_accuracy[skill]['correct'] += 1
-            
-    assessment.score = total_score
-    
-    # Compute percentage per skill
-    computed_skills = {}
-    for skill, data in skill_accuracy.items():
-        if data['total'] > 0:
-            computed_skills[skill] = int((data['correct'] / data['total']) * 100)
-        else:
-            computed_skills[skill] = 0
-            
-    # 2. Match Career Path
-    career_paths = CareerPath.objects.order_by('min_score')
-    recommended_career = None
-    
-    target_career = None
-    for cp in career_paths:
-        if total_score < cp.min_score:
-            target_career = cp
-            break
-            
-    if not target_career:
-        target_career = career_paths.last()
-        
-    recommended_career = target_career
-    
-    # 3. Confidence Band
-    max_possible_score = len(responses) * 10 if responses else 60
-    percentage_score = int((total_score / max_possible_score) * 100) if max_possible_score > 0 else 0
-    
-    confidence_band = ""
-    confidence_message = ""
-    
-    if percentage_score < 40:
-        confidence_band = "Beginner"
-        confidence_message = "You have the interest, but need strong foundations. Start step by step."
-    elif percentage_score < 70:
-        confidence_band = "Career Ready"
-        confidence_message = "You are on the right path. With focused learning, you can become job-ready."
-    else:
-        confidence_band = "Strong Match"
-        confidence_message = "You already match this career well. Strengthen advanced skills to stand out."
+        q = response.question
+        category = q.category
+        selected = response.selected_option
 
-    # 4. Identify Skill Gaps
-    required_skills = recommended_career.required_skills if recommended_career else []
-    skill_gaps = []
-    
-    for req_skill in required_skills:
-        acc = computed_skills.get(req_skill, 0)
-        if acc < 60:
-            skill_gaps.append(req_skill)
+        if category == 'technical':
+            tech_total += 1
+            if selected == q.correct_option:
+                tech_correct += 1
+        elif category == 'aptitude':
+            apt_total += 1
+            if selected == q.correct_option:
+                apt_correct += 1
+        elif category == 'psychometric':
+            # Match question text prefix
+            q_text_clean = q.text.strip().rstrip('?.:')
+            found_map = None
+            for key, val in PSYCH_MAPPING.items():
+                if key in q_text_clean:
+                    found_map = val
+                    break
             
-    # 5. Recommend Courses (Updated Logic)
-    # Find courses that cover the missing skills via CourseBundle model
-    # We need to import CourseBundle here or at top (it's imported inside result view currently)
-    from courses.models import CourseBundle
-    from django.db.models import Q
+            if found_map:
+                trait = found_map.get(selected)
+                if trait:
+                    psych_profile_traits.append(trait)
+
+    # Pad Tech attributes (since they answer fewer psych questions)
+    if tech_total > 0:
+        # Tech users get these by default to show a fuller profile
+        extras = ["Technical Proficiency", "Problem Solving"]
+        for e in extras:
+            if e not in psych_profile_traits:
+                psych_profile_traits.append(e)
+
+    # Tech Analysis
+    tech_score = int((tech_correct / tech_total) * 100) if tech_total > 0 else 0
     
-    recommended_courses = []
-    
-    if skill_gaps:
-        # Find courses that have ANY of the missing skills
-        query = Q()
-        for skill in skill_gaps:
-            query |= Q(skills_required__icontains=skill)
-            
-        courses = CourseBundle.objects.filter(query, is_active=True).distinct()
-        
-        for course in courses:
-            recommended_courses.append({
-                'title': course.career_title,
-                'course_id': course.id,
-                'slug': course.slug
-            })
-            
-    # Save Result Data
+    # Aptitude Analysis
+    apt_score = int((apt_correct / apt_total) * 100) if apt_total > 0 else 0
+
+    # Total Score
+    scored_total = tech_total + apt_total
+    scored_correct = tech_correct + apt_correct
+    total_score_pct = int((scored_correct / scored_total) * 100) if scored_total > 0 else 0
+    assessment.score = total_score_pct
+
     result_data = {
-        'career': recommended_career.title if recommended_career else "N/A",
-        'confidence_band': confidence_band,
-        'confidence_message': confidence_message,
-        'skill_gaps': skill_gaps,
-        'recommended_courses': recommended_courses,
-        'skill_accuracy': computed_skills,
-        'percentage_score': percentage_score
+        'tech_score': tech_score,
+        'tech_total': tech_total,
+        'apt_score': apt_score,
+        'apt_total': apt_total,
+        'psych_profile': psych_profile_traits,
+        'total_score': total_score_pct
     }
     
     assessment.result_data = result_data
@@ -170,11 +201,19 @@ def submit_assessment(request, assessment_id):
     
     return redirect('assessment_result', assessment_id=assessment.id)
 
+    # --- Old Logic (Commented Out) ---
+    '''
+    # 1. Calculate Score & Skill Accuracy
+    responses = assessment.responses.all()
+    total_score = 0
+    skill_accuracy = {} # {skill_tag: {correct: 0, total: 0}}
+    # ... (rest of old code)
+    '''
+
 @login_required
 def assessment_result(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id, user=request.user)
     
-    # Fetch course bundles matching user's degree
     # Fetch course bundles matching user's degree
     from courses.models import CourseBundle, Enrollment
     course_bundles = []
@@ -187,7 +226,7 @@ def assessment_result(request, assessment_id):
         
     active_enrollment = Enrollment.objects.filter(user=request.user, status='active').first()
     active_course_bundle_id = active_enrollment.course.id if active_enrollment else None
-    
+    print('assessment.result_data: ', assessment.result_data)
     return render(request, 'assessments/result.html', {
         'assessment': assessment,
         'result': assessment.result_data,

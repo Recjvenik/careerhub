@@ -51,10 +51,20 @@ class Command(BaseCommand):
                         # Fallback if already dict or something else
                         options = options_list
                     
+                    # Clean correct_option (extract key from "A. Answer text")
+                    correct_opt = row.get('correct_option')
+                    if correct_opt:
+                        parts = correct_opt.split('.', 1)
+                        if len(parts) > 1:
+                            key = parts[0].strip()
+                            # Verify key is valid option
+                            if key in options:
+                                correct_opt = key
+
                     Question.objects.create(
                         text=row['text'],
                         options=options,
-                        correct_option=row['correct_option'] if row['correct_option'] else None,
+                        correct_option=correct_opt,
                         category=row['category'],
                         skill_tag=row.get('skill_tag', ''),
                         difficulty=row.get('difficulty', 'medium')

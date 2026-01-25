@@ -7,6 +7,7 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import CustomUser, OTP
 from .forms import UserRegistrationForm, UserLoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm
+from django.db.models import Q
 
 def generate_otp():
     return str(random.randint(100000, 999999))
@@ -240,7 +241,7 @@ from core.models import Degree
 def search_degrees(request):
     query = request.GET.get('q', '')
     if len(query) >= 1:
-        degrees = Degree.objects.filter(name__icontains=query)[:10]
+        degrees = Degree.objects.filter(Q(name__icontains=query) | Q(full_name__icontains=query))[:10]
         results = [{'id': d.id, 'name': f"{d.name} - {d.full_name}"} for d in degrees]
     else:
         # Return all degrees when no query (for dropdown)

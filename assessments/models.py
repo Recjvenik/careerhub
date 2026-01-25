@@ -55,6 +55,7 @@ class Assessment(models.Model):
     score = models.IntegerField(default=0)
     status = models.CharField(max_length=20, default='pending') # pending, completed
     result_data = models.JSONField(default=dict, blank=True) # Stores the computed analysis
+    question_order = models.JSONField(default=list, blank=True) # Stores list of question IDs in order
 
     def __str__(self):
         return f"{self.user.mobile} - {self.date_taken}"

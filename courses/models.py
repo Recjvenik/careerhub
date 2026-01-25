@@ -65,6 +65,7 @@ class CourseBundle(models.Model):
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
     discounted_price = models.DecimalField(max_digits=10, decimal_places=2)
     next_batch_date = models.DateField()
+    initial_salary = models.IntegerField(default=0)  # Average initial salary
     degrees = models.ManyToManyField('core.Degree', related_name='course_bundles')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

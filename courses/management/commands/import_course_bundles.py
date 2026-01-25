@@ -35,6 +35,7 @@ class Command(BaseCommand):
                             'original_price': row['original_price'],
                             'discounted_price': row['discounted_price'],
                             'next_batch_date': next_batch_date,
+                            'initial_salary': int(row.get('initial_salary', 0)),
                             'is_active': True,
                         }
                     )

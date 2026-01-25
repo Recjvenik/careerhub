@@ -5,186 +5,86 @@
 {% block content %}
 <div class="min-h-screen bg-gray-50 py-8 sm:py-12">
     <div class="container mx-auto px-4">
-        <div class="max-w-4xl mx-auto">
-
+        <div class="max-w-6xl mx-auto">
+            
             <!-- Header -->
-            <div class="text-center mb-8 sm:mb-10">
-                <div
-                    class="inline-block px-4 py-1.5 mb-4 text-xs font-medium tracking-wide text-blue-600 uppercase bg-blue-50 rounded-full border border-blue-100">
-                    Assessment Complete
-                </div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Your Career Roadmap</h1>
-                <p class="text-gray-600 text-sm sm:text-base">Here's your personalized career recommendation based on
-                    your assessment.</p>
+            <div class="text-center mb-10">
+                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Your Recommended Programs</h1>
+                <p class="text-sm text-gray-500">
+                    Curated for your <span class="font-semibold text-blue-600">{{ user.degree.name }}</span> degree
+                </p>
             </div>
 
-            <!-- Score Card -->
-            <div
-                class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-10 text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Your Assessment Score</h2>
-
-                <div class="relative inline-flex items-center justify-center mb-6">
-                    <svg class="w-32 h-32 transform -rotate-90">
-                        <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent"
-                            class="text-gray-100" />
-                        <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent"
-                            stroke-dasharray="351.86"
-                            stroke-dashoffset="{{ assessment.score|add:'-100'|get_digit:'1'|add:351.86 }}"
-                            class="text-blue-600 transition-all duration-1000 ease-out"
-                            style="stroke-dashoffset: calc(351.86 - (351.86 * {{ assessment.score }} / 100));" />
-                    </svg>
-                    <div class="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center">
-                        <span class="text-4xl font-bold text-gray-900">{{ assessment.score }}</span>
-                        <span class="text-xs text-gray-500 font-bold uppercase tracking-wide">Out of 100</span>
-                    </div>
-                </div>
-
-                <div class="max-w-md mx-auto">
-                    <p class="text-lg font-bold text-gray-900 mb-2">
-                        {% if assessment.score >= 80 %}
-                        Outstanding Performance! 🌟
-                        {% elif assessment.score >= 60 %}
-                        Great Job! 🚀
-                        {% else %}
-                        Good Start! 💪
-                        {% endif %}
-                    </p>
-                    <p class="text-gray-600">
-                        Based on your score, we've curated the perfect learning paths to help you achieve your career
-                        goals.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Recommended Course Bundles -->
+            <!-- Course Cards Grid -->
             {% if course_bundles %}
-            <div class="mb-12">
-                <div class="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 text-center sm:text-left">
-                    <div>
-                        <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Recommended Programs</h3>
-                        <p class="text-gray-500 mt-1">Curated specifically for your <span
-                                class="font-bold text-blue-600">{{ user.degree.name }}</span> degree</p>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for bundle in course_bundles %}
+                <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
+                    
+                    <!-- Card Content -->
+                    <div class="p-6 flex-grow">
+                        <!-- Title Row: Title left, Duration right -->
+                        <div class="flex items-start justify-between gap-3 mb-4">
+                            <h2 class="text-lg font-bold text-gray-900 leading-snug">{{ bundle.career_title }}</h2>
+                            <span class="flex-shrink-0 px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-semibold rounded-full border border-emerald-100">
+                                {{ bundle.duration }}
+                            </span>
+                        </div>
+                        
+                        <!-- Description -->
+                        <p class="text-gray-500 text-sm leading-relaxed mb-5">
+                            Complete career pathway to become a {{ bundle.career_title }}
+                        </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {% for bundle in course_bundles %}
-                    <div
-                        class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
-                        <div class="p-6 flex-grow">
-                            <div class="flex justify-between items-start mb-4">
-
-                                <span class="text-gray-500 text-sm font-medium">{{ bundle.duration }}</span>
-                            </div>
-                            <h2 class="text-xl font-bold text-gray-900 mb-2">{{ bundle.career_title }}</h2>
-                            <p class="text-gray-600 text-sm mb-4">
-                                Complete career pathway to become a {{bundle.career_title }}</p>
-
-                            <div class="space-y-2 mb-6" x-data="{ expanded: false }">
-                                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">Skills you'll
-                                    learn</p>
-                                {% for skill in bundle.get_skills_list|slice:":3" %}
-                                <div class="flex items-start gap-2 text-sm text-gray-600">
-                                    <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span>{{ skill }}</span>
-                                </div>
-                                {% endfor %}
-
-                                {% if bundle.get_skills_list|length > 3 %}
-                                <!-- Hidden topics (shown when expanded) -->
-                                <template x-if="expanded">
-                                    <div class="space-y-2">
-                                        {% for skill in bundle.get_skills_list|slice:"3:" %}
-                                        <div class="flex items-start gap-2 text-sm text-gray-600">
-                                            <svg class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" fill="none"
-                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                            <span>{{ skill }}</span>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </template>
-                                <!-- Toggle button -->
-                                <div class="pl-6">
-                                    <button @click="expanded = !expanded"
-                                        class="text-xs text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
-                                        <span x-show="!expanded">+ {{ bundle.get_skills_list|length|add:"-3" }} more
-                                            skills ▼</span>
-                                        <span x-show="expanded">Show less ▲</span>
-                                    </button>
-                                </div>
-                                {% endif %}
-                            </div>
+                        <!-- Skills -->
+                        <div class="mb-4">
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Skills</p>
+                            <p class="text-sm text-gray-600 leading-relaxed">
+                                {% for skill in bundle.get_skills_list %}{{ skill }}{% if not forloop.last %}<span class="text-gray-500 text-base font-bold mx-1">•</span>{% endif %}{% endfor %}
+                            </p>
                         </div>
 
-                        <div class="p-6 bg-gray-50 border-t border-gray-100 mt-auto">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <span class="text-2xl font-bold text-gray-900">
-                                        ₹{{bundle.discounted_price|floatformat:0}}</span>
-                                    <span class="text-sm text-gray-500 line-through ml-2">
-                                        ₹{{bundle.original_price|floatformat:0}}</span>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-xs text-gray-500 font-medium mb-0.5">Next Batch</div>
-                                    <div class="text-xs font-bold text-gray-700">
-                                        {{bundle.next_batch_date|date:"d M Y"}}</div>
-                                </div>
-                            </div>
-                            <a href="#"
-                                class="block w-full py-3 bg-blue-600 text-white text-center rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm">
-                                Enroll Now
-                            </a>
+                        <!-- Average Salary -->
+                        <div class="mt-4">
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Avg. Starting Salary</p>
+                            <p class="text-sm font-bold text-emerald-600">₹{{ bundle.initial_salary|floatformat:0 }}/month</p>
                         </div>
                     </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Legacy Courses (if any) -->
-            {% if result.recommended_courses %}
-            <div class="mb-8">
-                <h3 class="text-lg font-bold text-gray-900 mb-4">Additional Learning Resources</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% for course in result.recommended_courses %}
-                    <div
-                        class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                        <div
-                            class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-3">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                </path>
-                            </svg>
+                    
+                    <!-- Card Footer -->
+                    <div class="border-t border-gray-100 px-6 py-6 bg-gray-50/50">
+                        <div class="flex justify-between items-center mb-5">
+                            <div>
+                                <p class="text-xs text-gray-400 mb-1">Course Fee</p>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-xl font-bold text-gray-900">₹{{ bundle.discounted_price|floatformat:0 }}</span>
+                                    <span class="text-sm text-gray-400 line-through ml-1">₹{{ bundle.original_price|floatformat:0 }}</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-400 mb-1">Next Batch</p>
+                                <p class="text-sm font-semibold text-gray-700">{{ bundle.next_batch_date|date:"d M Y" }}</p>
+                            </div>
                         </div>
-                        <h4 class="font-bold text-gray-900 mb-2">{{ course.title }}</h4>
-                        <p class="text-sm text-gray-600 mb-3">Master the skills you need for this role.</p>
-                        <a href="#"
-                            class="text-blue-600 font-semibold text-sm hover:text-blue-800 flex items-center gap-1">
-                            View Course <span aria-hidden="true">&rarr;</span>
+                        
+                        <a href="#" class="block w-full py-3 bg-blue-600 text-white text-center text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+                            Enroll Now
                         </a>
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
             {% endif %}
 
-            <div class="text-center">
-                <a href="{% url 'dashboard' %}"
-                    class="inline-block px-8 py-3 bg-white border border-gray-200 text-gray-700 rounded-full font-medium hover:bg-gray-50 hover:shadow-sm transition-all text-sm">
-                    Go to Dashboard
+            <!-- Back Button -->
+            <div class="text-center mt-12">
+                <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 text-gray-500 text-sm font-medium hover:text-gray-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                    Back to Dashboard
                 </a>
             </div>
-
         </div>
     </div>
 </div>

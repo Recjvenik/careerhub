@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Course, Enrollment
+from .models import CourseBundle, Enrollment
 
 @login_required
 def enroll_course(request, slug):
-    course = get_object_or_404(Course, slug=slug)
+    course = get_object_or_404(CourseBundle, slug=slug)
     user = request.user
     
     # Check for existing active enrollment
@@ -24,7 +24,7 @@ def enroll_course(request, slug):
             
     # Create new enrollment
     Enrollment.objects.create(user=user, course=course, status='active')
-    messages.success(request, f"Successfully enrolled in {course.title}!")
+    messages.success(request, f"Successfully enrolled in {course.career_title}!")
     return redirect('dashboard')
 
 @login_required
@@ -32,7 +32,7 @@ def change_course(request, slug):
     if request.method != 'POST':
         return redirect('course_detail', slug=slug)
         
-    course = get_object_or_404(Course, slug=slug)
+    course = get_object_or_404(CourseBundle, slug=slug)
     user = request.user
     
     # Deactivate current active enrollment
@@ -43,11 +43,11 @@ def change_course(request, slug):
         
     # Create new enrollment
     Enrollment.objects.create(user=user, course=course, status='active')
-    messages.success(request, f"Course changed to {course.title}!")
+    messages.success(request, f"Course changed to {course.career_title}!")
     return redirect('dashboard')
 
 def course_list(request):
-    courses = Course.objects.filter(is_active=True)
+    courses = CourseBundle.objects.filter(is_active=True)
     active_enrollment_course_id = None
     
     if request.user.is_authenticated:

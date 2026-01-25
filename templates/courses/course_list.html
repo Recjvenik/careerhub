@@ -30,16 +30,11 @@
                             </span>
                         </div>
                         
-                        <!-- Description -->
-                        <p class="text-gray-500 text-sm leading-relaxed mb-5">
-                            {{ course.short_description }}
-                        </p>
-
                         <!-- Topics/Skills -->
                         <div>
-                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Topics Covered</p>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Skills Covered</p>
                             <p class="text-sm text-gray-600 leading-relaxed">
-                                {% for program in course.programs_included %}{{ program }}{% if not forloop.last %}<span class="text-gray-500 text-base font-bold mx-1">•</span>{% endif %}{% endfor %}
+                                {% for skill in course.get_skills_list %}{{ skill }}{% if not forloop.last %}<span class="text-gray-500 text-base font-bold mx-1">•</span>{% endif %}{% endfor %}
                             </p>
                         </div>
                     </div>
@@ -50,13 +45,13 @@
                             <div>
                                 <p class="text-xs text-gray-400 mb-1">Course Fee</p>
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-xl font-bold text-gray-900">₹{{ course.price|floatformat:0 }}</span>
-                                    <span class="text-sm text-gray-400 line-through ml-1">₹{{ course.original_price_inr|floatformat:0 }}</span>
+                                    <span class="text-xl font-bold text-gray-900">₹{{ course.discounted_price|floatformat:0 }}</span>
+                                    <span class="text-sm text-gray-400 line-through ml-1">₹{{ course.original_price|floatformat:0 }}</span>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs text-gray-400 mb-1">Level</p>
-                                <p class="text-sm font-semibold text-gray-700">{{ course.level }}</p>
+                                <p class="text-xs text-gray-400 mb-1">Next Batch</p>
+                                <p class="text-sm font-semibold text-gray-700">{{ course.next_batch_date|date:"d M Y" }}</p>
                             </div>
                         </div>
                         

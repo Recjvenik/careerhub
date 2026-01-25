@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Question, Assessment, UserResponse, CareerPath
-from courses.models import Course, CourseSkill
 import json
 
 @login_required
@@ -133,18 +132,25 @@ def submit_assessment(request, assessment_id):
             skill_gaps.append(req_skill)
             
     # 5. Recommend Courses (Updated Logic)
-    # Find courses that cover the missing skills via CourseSkill model
+    # Find courses that cover the missing skills via CourseBundle model
+    # We need to import CourseBundle here or at top (it's imported inside result view currently)
+    from courses.models import CourseBundle
+    from django.db.models import Q
+    
     recommended_courses = []
     
     if skill_gaps:
         # Find courses that have ANY of the missing skills
-        # We can use __in lookup on the related CourseSkill
-        courses = Course.objects.filter(skills__skill_tag__in=skill_gaps).distinct()
+        query = Q()
+        for skill in skill_gaps:
+            query |= Q(skills_required__icontains=skill)
+            
+        courses = CourseBundle.objects.filter(query, is_active=True).distinct()
         
         for course in courses:
             recommended_courses.append({
-                'title': course.title,
-                'course_id': course.id, # Or slug
+                'title': course.career_title,
+                'course_id': course.id,
                 'slug': course.slug
             })
             
@@ -169,17 +175,23 @@ def assessment_result(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id, user=request.user)
     
     # Fetch course bundles matching user's degree
-    from courses.models import CourseBundle
+    # Fetch course bundles matching user's degree
+    from courses.models import CourseBundle, Enrollment
     course_bundles = []
+    print('request.user.degree: ', request.user.degree)
     if request.user.degree:
         course_bundles = CourseBundle.objects.filter(
             degrees=request.user.degree,
             is_active=True
         ).distinct()
+        
+    active_enrollment = Enrollment.objects.filter(user=request.user, status='active').first()
+    active_course_bundle_id = active_enrollment.course.id if active_enrollment else None
     
     return render(request, 'assessments/result.html', {
         'assessment': assessment,
         'result': assessment.result_data,
         'course_bundles': course_bundles,
+        'active_course_bundle_id': active_course_bundle_id,
     })
 

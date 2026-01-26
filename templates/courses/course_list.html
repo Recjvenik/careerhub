@@ -42,13 +42,27 @@
                     <!-- Card Footer -->
                     <div class="border-t border-gray-100 px-6 py-6 bg-gray-50/50">
                         <div class="flex justify-between items-center mb-5">
-                            <div>
-                                <p class="text-xs text-gray-400 mb-1">Course Fee</p>
-                                <div class="flex items-baseline gap-2">
-                                    <span class="text-xl font-bold text-gray-900">₹{{ course.discounted_price|floatformat:0 }}</span>
-                                    <span class="text-sm text-gray-400 line-through ml-1">₹{{ course.original_price|floatformat:0 }}</span>
+                                {% if active_course_id != course.id %}
+                                <div>
+                                    <p class="text-xs text-gray-400 mb-1">Course Fee</p>
+                                    {% if FREE_ALL_COURSES %}
+                                    <div class="flex flex-col">
+                                        <div class="flex items-baseline gap-2">
+                                            <span class="text-xl font-bold text-green-600">Free</span>
+                                            <span class="text-sm text-gray-400 line-through ml-1">₹{{ course.original_price|floatformat:0 }}</span>
+                                        </div>
+                                        <p class="text-xs text-red-600 font-bold mt-1 animate-pulse">Valid for next 24 hr</p>
+                                    </div>
+                                    {% else %}
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-xl font-bold text-gray-900">₹{{ course.discounted_price|floatformat:0 }}</span>
+                                        <span class="text-sm text-gray-400 line-through ml-1">₹{{ course.original_price|floatformat:0 }}</span>
+                                    </div>
+                                    {% endif %}
                                 </div>
-                            </div>
+                                {% else %}
+                                <div></div>
+                                {% endif %}
                             <div class="text-right">
                                 <p class="text-xs text-gray-400 mb-1">Next Batch</p>
                                 <p class="text-sm font-semibold text-gray-700">{{ course.next_batch_date|date:"d M Y" }}</p>

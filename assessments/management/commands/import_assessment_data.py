@@ -16,7 +16,7 @@ class Command(BaseCommand):
             CareerPath.objects.all().delete()
         
         self.import_questions()
-        self.import_careers()
+        # self.import_careers()
         
         self.stdout.write(self.style.SUCCESS('Import completed!'))
 

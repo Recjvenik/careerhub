@@ -27,9 +27,9 @@ class CustomUser(AbstractUser):
         return self.mobile or self.email or f"User {self.pk}"
 
 class OTP(models.Model):
-    mobile = models.CharField(max_length=15)
+    mobile = models.CharField(max_length=15, db_index=True)
     otp = models.CharField(max_length=6)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):

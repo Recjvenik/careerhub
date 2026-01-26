@@ -42,7 +42,7 @@ class Question(models.Model):
     text = models.TextField()
     options = models.JSONField(help_text="List of options")
     correct_option = models.CharField(max_length=255, blank=True, null=True)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='technical')
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='technical', db_index=True)
     skill_tag = models.CharField(max_length=100, blank=True, null=True)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY_CHOICES, default='medium')
     
@@ -51,9 +51,9 @@ class Question(models.Model):
 
 class Assessment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    date_taken = models.DateTimeField(auto_now_add=True)
+    date_taken = models.DateTimeField(auto_now_add=True, db_index=True)
     score = models.IntegerField(default=0)
-    status = models.CharField(max_length=20, default='pending') # pending, completed
+    status = models.CharField(max_length=20, default='pending', db_index=True) # pending, completed
     result_data = models.JSONField(default=dict, blank=True) # Stores the computed analysis
     question_order = models.JSONField(default=list, blank=True) # Stores list of question IDs in order
 

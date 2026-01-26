@@ -1,0 +1,9 @@
+career_title,skills_required,duration,original_price,discounted_price,next_batch_date,initial_salary,is_active,slug
+Business Development Executive,Communication (Spoken/Writing); Basic MS Word Excel and PowerPoint,"2 weeks",2999,1999,"2026-02-01",28000,1,business-development-executive
+Content Writer,Communication (Spoken/Writing); Basic MS Word Excel and PowerPoint,"2 weeks",2999,1999,"2026-02-01",22000,1,content-writer
+Operation Executive,Communication (Spoken/Writing); Basic MS Word Excel and PowerPoint,"2 weeks",2999,1999,"2026-02-01",25000,1,operation-executive
+Human Resource Executive,Communication (Spoken/Writing); Basic MS Word Excel and PowerPoint,"2 weeks",2999,1999,"2026-02-01",25000,1,human-resource-executive
+Data Analysis,Basics of Analytics; Any Visualization Tool; Basics of Database Management; Basic MS Word Excel and PowerPoint,"4 weeks",4999,2999,"2026-02-01",30000,1,data-analysis
+Software Engineer (Frontend),HTML; JavaScript; ReactJS; System Architecture; SEO; Agile,"4 weeks",6999,3999,"2026-02-01",35000,1,software-engineer-frontend
+Software Engineer (Backend),Data Structures; Python; Database; Agile,"4 weeks",8999,4999,"2026-02-01",35000,1,software-engineer-backend
+QA Engineer,Software Testing; Database Management System; Agile,"4 weeks",4999,2999,"2026-02-01",30000,1,qa-engineer

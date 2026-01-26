@@ -83,6 +83,16 @@ DishaPath is a comprehensive career guidance platform designed to help users dis
 
 For detailed production deployment instructions, please refer to [DEPLOYMENT.md](DEPLOYMENT.md).
 
+
+## Data Import
+python manage.py bulk_import_city_states
+python manage.py bulk_import_colleges
+python manage.py import_branches
+python manage.py import_degrees 
+python manage.py import_course_bundles
+python manage.py map_degrees_to_bundles
+
+
 ## Contributing
 
 1.  Fork the repository.

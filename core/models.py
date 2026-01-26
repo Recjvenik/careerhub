@@ -1,13 +1,13 @@
 from django.db import models
 
 class State(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
         return self.name
 
 class City(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
 
     def __str__(self):
         return self.name
@@ -23,14 +23,14 @@ class CityState(models.Model):
         return f"{self.city.name} - {self.state.name}"
 
 class College(models.Model):
-    name = models.CharField(max_length=500,default=None)
+    name = models.CharField(max_length=500,default=None, db_index=True)
     short_name = models.CharField(max_length=255,default=None)
 
     def __str__(self):
         return self.name
 
 class Branch(models.Model):
-    name = models.CharField(max_length=255,default=None)
+    name = models.CharField(max_length=255,default=None, db_index=True)
     short_name = models.CharField(max_length=255,default=None)
 
     def __str__(self):
@@ -55,7 +55,7 @@ class Degree(models.Model):
         ('Research & Doctorate', 'Research & Doctorate'),
     ]
 
-    name = models.CharField(max_length=100)
-    full_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=100, db_index=True)
+    full_name = models.CharField(max_length=255, db_index=True)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
     is_tech = models.BooleanField(default=False)

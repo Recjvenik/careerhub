@@ -19,6 +19,7 @@ class Command(BaseCommand):
                     defaults={
                         'full_name': row['full_name'],
                         'category': row['category'],
+                        'is_tech': row['is_tech'],
                     }
                 )
                 if created:

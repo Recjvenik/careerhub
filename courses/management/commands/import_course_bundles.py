@@ -9,8 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         csv_files = [
-            'data/course_bundles_arts_commerce.csv',
-            'data/course_bundles_engineering.csv',
+            'data/course_bundles_all.csv',
         ]
         
         total_created = 0
@@ -37,13 +36,9 @@ class Command(BaseCommand):
                             'next_batch_date': next_batch_date,
                             'initial_salary': int(row.get('initial_salary', 0)),
                             'is_active': True,
+                            'slug': row['slug']
                         }
                     )
-                    
-                    # Link degrees (pipe-separated)
-                    degree_names = row['degrees'].split('|')
-                    degrees = Degree.objects.filter(name__in=degree_names)
-                    bundle.degrees.add(*degrees)
                     
                     if created:
                         total_created += 1

@@ -3,48 +3,99 @@
 {% block content %}
 <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-        <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Verify OTP
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-gray-900">
+                {% if verification_type == 'registration' %}Verify Mobile Number{% else %}Identity Verification{% endif %}
             </h2>
-            <p class="mt-2 text-center text-sm text-gray-600">
-                Enter the OTP sent to your mobile
+            <p class="mt-2 text-sm text-gray-600">
+                {% if verification_type == 'registration' %}
+                    Click below to verify your mobile number
+                {% elif '@' in reset_identifier %}
+                    Verify your email address to reset password
+                {% else %}
+                    Verify your mobile number to reset password
+                {% endif %}
             </p>
         </div>
+
         {% if messages %}
-        {% for message in messages %}
-        <div class="{% if message.tags == 'error' %}bg-red-100 border-red-400 text-red-700{% else %}bg-green-100 border-green-400 text-green-700{% endif %} border px-4 py-3 rounded relative"
-            role="alert">
-            <span class="block sm:inline">{{ message }}</span>
+        <div class="space-y-2">
+            {% for message in messages %}
+            <div class="{% if message.tags == 'error' %}bg-red-50 text-red-600{% else %}bg-green-50 text-green-600{% endif %} p-4 rounded-lg text-sm">
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
         {% endif %}
-        <form class="mt-8 space-y-6"
-            action="{% if action_url %}{% url action_url %}{% else %}{% url 'verify_otp' %}{% endif %}" method="POST">
-            {% csrf_token %}
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    <label for="otp" class="sr-only">OTP</label>
-                    <input id="otp" name="otp" type="text" required
-                        class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-600 focus:border-black focus:z-10 sm:text-sm"
-                        placeholder="Enter OTP">
+
+        <div id="verification-container" class="mt-8 flex justify-center">
+            {% if verification_type == 'registration' or '@' not in reset_identifier %}
+                <!-- Mobile Verification -->
+                <div class="pe_signin_button" data-client-id="{{ client_id }}">
+                    <script src="https://www.phone.email/sign_in_button_v1.js" async></script>
                 </div>
-            </div>
+            {% else %}
+                <!-- Email Verification -->
+                <div class="pe_verify_email" data-client-id="{{ client_id }}">
+                    <script src="https://www.phone.email/verify_email_v1.js" async></script>
+                </div>
+            {% endif %}
+        </div>
 
-            <div>
-                <button type="submit"
-                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
-                    Verify & Login
-                </button>
-            </div>
+        <div id="status-message" class="hidden text-center mt-4 p-4 rounded-lg"></div>
 
-            <div class="text-center text-sm">
-                <span class="text-gray-600">Didn't receive the code?</span>
-                <a href="{% url 'resend_otp' %}" class="font-medium text-blue-600 hover:text-blue-500">
-                    Resend OTP
-                </a>
-            </div>
-        </form>
+        <div class="text-center mt-6">
+            <a href="{% if verification_type == 'registration' %}{% url 'register' %}{% else %}{% url 'forgot_password' %}{% endif %}" 
+               class="text-sm font-medium text-blue-600 hover:text-blue-500">
+               Go back
+            </a>
+        </div>
     </div>
 </div>
+
+<script>
+function handleVerification(userObj) {
+    const user_json_url = userObj.user_json_url;
+    const statusMsg = document.getElementById('status-message');
+    
+    // Show loading state
+    statusMsg.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'bg-green-50', 'text-green-600');
+    statusMsg.classList.add('bg-blue-50', 'text-blue-600');
+    statusMsg.innerText = "Verifying with our servers...";
+
+    // Send to backend
+    fetch(`/auth/phone-email-callback/?user_json_url=${encodeURIComponent(user_json_url)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                statusMsg.classList.remove('bg-blue-50', 'text-blue-600');
+                statusMsg.classList.add('bg-green-50', 'text-green-600');
+                statusMsg.innerText = "Verification successful! Redirecting...";
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 1000);
+            } else {
+                statusMsg.classList.remove('bg-blue-50', 'text-blue-600');
+                statusMsg.classList.add('bg-red-50', 'text-red-600');
+                statusMsg.innerText = data.message || "Verification failed. Please try again.";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            statusMsg.classList.remove('bg-blue-50', 'text-blue-600');
+            statusMsg.classList.add('bg-red-50', 'text-red-600');
+            statusMsg.innerText = "An error occurred. Please try again later.";
+        });
+}
+
+// Phone Email Listener for Mobile
+function phoneEmailListener(userObj) {
+    handleVerification(userObj);
+}
+
+// Phone Email Receiver for Email
+function phoneEmailReceiver(userObj) {
+    handleVerification(userObj);
+}
+</script>
 {% endblock %}

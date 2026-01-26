@@ -110,10 +110,6 @@ class ForgotPasswordForm(forms.Form):
         return data
 
 class ResetPasswordForm(forms.Form):
-    otp = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
-        'placeholder': 'Enter 6-digit OTP'
-    }))
     new_password = forms.CharField(widget=forms.PasswordInput(attrs={
         'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
         'placeholder': 'Enter new password'

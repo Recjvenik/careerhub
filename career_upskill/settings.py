@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-lse9^cwz8u06n9ewph4jzhb!24wr($9s)#e_6kb4nwf)(qpp0%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -96,6 +96,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.settings_context',
             ],
         },
     },
@@ -200,3 +201,6 @@ if DEBUG:
     INTERNAL_IPS = [
         "127.0.0.1",
     ]
+
+
+FREE_ALL_COURSES = config('FREE_ALL_COURSES', default=False, cast=bool)

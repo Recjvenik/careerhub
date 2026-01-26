@@ -8,6 +8,7 @@ from datetime import timedelta
 from .models import CustomUser, OTP
 from .forms import UserRegistrationForm, UserLoginForm, ForgotPasswordForm, ResetPasswordForm, ProfileUpdateForm
 from django.db.models import Q
+from .utils import fetch_phone_email_data
 
 def generate_otp():
     return str(random.randint(100000, 999999))
@@ -16,51 +17,79 @@ def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            # Don't save yet, store in session
+            # Store data in session for post-verification creation
             user_data = {
                 'full_name': form.cleaned_data['full_name'],
                 'mobile': form.cleaned_data['mobile'],
                 'email': form.cleaned_data['email'],
                 'password': form.cleaned_data['password']
             }
-            
-            # Generate OTP
-            mobile = user_data['mobile']
-            otp_code = generate_otp()
-            OTP.objects.create(mobile=mobile, otp=otp_code)
-            print(f"OTP for {mobile}: {otp_code}") # For dev
-            
-            # Store in session
             request.session['registration_data'] = user_data
-            request.session['verify_mobile'] = mobile
+            request.session['verification_type'] = 'registration'
             
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'success', 'redirect_url': '/auth/verify-registration-otp/'})
             return redirect('verify_registration_otp')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': form.errors.as_text()
+                }, status=400)
     else:
         form = UserRegistrationForm()
-    return render(request, 'users/register.html', {'form': form})
+    
+    response = render(request, 'users/register.html', {'form': form})
+    response['Cross-Origin-Opener-Policy'] = 'same-origin-allow-popups'
+    return response
 
 def verify_registration_otp(request):
-    mobile = request.session.get('verify_mobile')
-    user_data = request.session.get('registration_data')
-    
-    if not mobile or not user_data:
+    # This view will now just render the page with the Phone Email button
+    verification_type = request.session.get('verification_type')
+    if not verification_type:
         return redirect('register')
         
-    if request.method == 'POST':
-        otp_input = request.POST.get('otp')
-        
-        try:
-            otp_record = OTP.objects.filter(mobile=mobile, otp=otp_input, is_verified=False).latest('created_at')
-            
-            # Check expiration (5 minutes)
-            if otp_record.created_at < timezone.now() - timedelta(minutes=5):
-                messages.error(request, "OTP has expired. Please request a new one.")
-                return redirect('verify_registration_otp')
+    response = render(request, 'users/verify_otp.html', {
+        'verification_type': verification_type,
+        'reset_identifier': request.session.get('reset_identifier'),
+        'client_id': "13443371295433469166" # Provided in the snippet
+    })
+    response['Cross-Origin-Opener-Policy'] = 'same-origin-allow-popups'
+    return response
 
-            otp_record.is_verified = True
-            otp_record.save()
+def phone_email_callback(request):
+    """Handle the user_json_url from Phone Email"""
+    user_json_url = request.GET.get('user_json_url')
+    if not user_json_url:
+        return JsonResponse({'status': 'error', 'message': 'No URL provided'}, status=400)
+
+    data = fetch_phone_email_data(user_json_url)
+    if not data:
+        return JsonResponse({'status': 'error', 'message': 'Failed to fetch user data'}, status=500)
+
+    verification_type = request.session.get('verification_type')
+    
+    if verification_type == 'registration':
+        user_data = request.session.get('registration_data')
+        if not user_data:
+            return JsonResponse({'status': 'error', 'message': 'Registration session expired'}, status=400)
             
-            # Create user
+        # Strict Verification: Ensure the verified phone matches the input phone
+        verified_phone = data.get("user_phone_number")
+        input_phone = user_data.get('mobile')
+        
+        # Simple normalization: keep only last 10 digits for comparison
+        norm_verified = ''.join(filter(str.isdigit, verified_phone))[-10:] if verified_phone else ""
+        norm_input = ''.join(filter(str.isdigit, input_phone))[-10:] if input_phone else ""
+        
+        if norm_verified != norm_input:
+            return JsonResponse({
+                'status': 'error', 
+                'message': f'Verification failed: Verified number ({verified_phone}) does not match registered number ({input_phone}).'
+            }, status=400)
+        
+        # Create user
+        try:
             user = CustomUser.objects.create_user(
                 mobile=user_data['mobile'],
                 email=user_data['email'],
@@ -70,20 +99,52 @@ def verify_registration_otp(request):
             user.is_verified = True
             user.save()
             
-            # Login user
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             
             # Clear session
-            del request.session['verify_mobile']
             del request.session['registration_data']
+            del request.session['verification_type']
             
-            messages.success(request, "Confirm Your OTP to Get Started!")
-            return redirect('index')
+            return JsonResponse({'status': 'success', 'redirect_url': '/'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    elif verification_type == 'forgot_password':
+        reset_identifier = request.session.get('reset_identifier')
+        if not reset_identifier:
+            return JsonResponse({'status': 'error', 'message': 'Reset session expired'}, status=400)
             
-        except OTP.DoesNotExist:
-            messages.error(request, "Invalid OTP")
+        verified_email = data.get("user_email_id")
+        verified_phone = data.get("user_phone_number")
+        
+        try:
+            if '@' in reset_identifier:
+                # Email verification case
+                if reset_identifier.lower() != (verified_email or "").lower():
+                    return JsonResponse({
+                        'status': 'error', 
+                        'message': f'Verification failed: Verified email ({verified_email}) does not match requested email ({reset_identifier}).'
+                    }, status=400)
+                user = CustomUser.objects.get(email=reset_identifier)
+            else:
+                # Mobile verification case
+                norm_verified = ''.join(filter(str.isdigit, verified_phone))[-10:] if verified_phone else ""
+                norm_input = ''.join(filter(str.isdigit, reset_identifier))[-10:] if reset_identifier else ""
+                
+                if norm_verified != norm_input:
+                    return JsonResponse({
+                        'status': 'error', 
+                        'message': f'Verification failed: Verified number ({verified_phone}) does not match requested number ({reset_identifier}).'
+                    }, status=400)
+                user = CustomUser.objects.get(mobile=reset_identifier)
             
-    return render(request, 'users/verify_otp.html', {'action_url': 'verify_registration_otp'})
+            request.session['reset_user_id'] = user.id
+            request.session['is_verified'] = True
+            return JsonResponse({'status': 'success', 'redirect_url': '/auth/reset-password/'})
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'User not found in our records.'}, status=404)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid verification type'}, status=400)
 
 def resend_otp_view(request):
     mobile = request.session.get('verify_mobile')
@@ -121,50 +182,53 @@ def forgot_password_view(request):
         form = ForgotPasswordForm(request.POST)
         if form.is_valid():
             mobile_or_email = form.cleaned_data['mobile_or_email']
-            # Logic to find user and send OTP
-            # For now, we'll just assume mobile for OTP generation as per previous logic
-            # In a real app, we'd check if it's email or mobile and send accordingly
+            request.session['reset_identifier'] = mobile_or_email
+            request.session['verification_type'] = 'forgot_password'
             
-            if '@' in mobile_or_email:
-                user = CustomUser.objects.get(email=mobile_or_email)
-                mobile = user.mobile
-            else:
-                mobile = mobile_or_email
-                
-            otp_code = generate_otp()
-            OTP.objects.create(mobile=mobile, otp=otp_code)
-            print(f"OTP for {mobile}: {otp_code}") # For dev
-            request.session['reset_mobile'] = mobile
-            return redirect('reset_password')
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'verification_type': 'email' if '@' in mobile_or_email else 'mobile'
+                })
+            return redirect('verify_registration_otp')
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': form.errors.as_text()
+                }, status=400)
     else:
         form = ForgotPasswordForm()
-    return render(request, 'users/forgot_password.html', {'form': form})
+    
+    response = render(request, 'users/forgot_password.html', {'form': form})
+    response['Cross-Origin-Opener-Policy'] = 'same-origin-allow-popups'
+    return response
 
 def reset_password_view(request):
-    mobile = request.session.get('reset_mobile')
-    if not mobile:
+    user_id = request.session.get('reset_user_id')
+    is_verified = request.session.get('is_verified')
+    
+    if not user_id or not is_verified:
         return redirect('forgot_password')
         
     if request.method == 'POST':
         form = ResetPasswordForm(request.POST)
+        # Note: We need to update ResetPasswordForm to not require OTP field since we verified it via third party
         if form.is_valid():
-            otp_input = form.cleaned_data['otp']
             new_password = form.cleaned_data['new_password']
             
             try:
-                otp_record = OTP.objects.filter(mobile=mobile, otp=otp_input, is_verified=False).latest('created_at')
-                otp_record.is_verified = True
-                otp_record.save()
-                
-                user = CustomUser.objects.get(mobile=mobile)
+                user = CustomUser.objects.get(id=user_id)
                 user.set_password(new_password)
                 user.save()
                 
                 messages.success(request, "Password reset successfully. Please login.")
-                del request.session['reset_mobile']
+                del request.session['reset_user_id']
+                del request.session['is_verified']
+                del request.session['reset_identifier']
                 return redirect('login')
-            except OTP.DoesNotExist:
-                form.add_error('otp', "Invalid OTP")
+            except CustomUser.DoesNotExist:
+                messages.error(request, "User not found")
     else:
         form = ResetPasswordForm()
         

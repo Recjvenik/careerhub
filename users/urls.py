@@ -12,4 +12,5 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('profile/', views.profile_view, name='profile'),
     path('search-degrees/', views.search_degrees, name='search_degrees'),
+    path('phone-email-callback/', views.phone_email_callback, name='phone_email_callback'),
 ]

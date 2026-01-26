@@ -16,10 +16,13 @@ def start_assessment(request):
         return redirect('profile')
 
     # Assessment.objects.filter(user=user, status='completed').delete()
+    
     # Check if assessment already taken
-    if Assessment.objects.filter(user=user, status='completed').exists():
+    assessment = Assessment.objects.filter(user=user, status='completed').last()
+    if assessment:
         messages.info(request, "You have already completed the assessment.")
-        return redirect('dashboard')
+        return redirect('assessment_result', assessment_id=assessment.id)
+        # return redirect('dashboard')
 
     if request.method == 'POST':
         # Clear previous incomplete assessments

@@ -10,3 +10,5 @@ PyJWT
 cryptography
 python-decouple
 django-debug-toolbar
+django-extensions
+ipython

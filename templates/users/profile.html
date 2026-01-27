@@ -6,18 +6,6 @@
 <div class="bg-notebook-bg pb-20 sm:pb-4">
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto pt-4 sm:pt-6">
-            <!-- Profile Completion Progress Bar -->
-            <div class="mb-5 sm:mb-6">
-                <div class="flex justify-between items-center mb-1.5">
-                    <h2 class="text-sm sm:text-base text-gray-900 font-semibold">Profile Completion</h2>
-                    <span class="text-sm sm:text-base text-black font-bold">{{ completion_percentage }}%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                        style="width: {{ completion_percentage }}%"></div>
-                </div>
-            </div>
-
             <form method="post" id="profile-form"
                 class="bg-white rounded-xl shadow-sm p-5 sm:p-8 border border-gray-200">
                 {% csrf_token %}

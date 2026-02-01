@@ -3,152 +3,176 @@
 {% block title %}Assessment Result - Karyo{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-8 sm:py-12">
-    <div class="container mx-auto px-4">
+<div class="min-h-screen bg-notebook-bg py-8 sm:py-12 relative overflow-hidden">
+    <!-- Background Decor -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10 opacity-40 pointer-events-none">
+        <div class="absolute top-20 right-10 w-96 h-96 bg-brand-primary/10 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-20 left-10 w-96 h-96 bg-brand-accent/10 rounded-full blur-[100px]"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-6xl mx-auto">
             
             <!-- Analysis Section -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-8 mb-10 sm:mb-16">
-                <div class="flex items-center gap-3 mb-6 sm:mb-8 border-b border-gray-100 pb-4">
-                    <div class="p-2 bg-blue-50 text-blue-600 rounded-lg">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-                        </svg>
+            <div class="glass-card mb-10 animate-[fadeIn_0.5s_ease-out]">
+                <div class="p-6 sm:p-8">
+                    <div class="flex items-center gap-4 mb-6 border-b border-slate-100 pb-5">
+                        <div class="p-2.5 bg-brand-primary/10 text-brand-primary rounded-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-display font-bold text-slate-900">Your Assessment Profile</h2>
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Your Assessment Profile</h2>
-                </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
-                    <!-- Scores -->
-                    <div class="space-y-6">
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Performance Metrics</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
+                        <!-- Scores -->
+                        <div class="space-y-6">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-accent"></span>
+                                Performance Metrics
+                            </h3>
+                            
+                            {% if result.tech_total > 0 %}
+                            <div>
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="font-bold text-slate-700">Technical Knowledge</span>
+                                    <span class="font-display font-bold text-emerald-600 text-lg">{{ result.tech_score }}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                    <div class="bg-emerald-500 h-full rounded-full transition-all duration-1000 ease-out shadow-lg shadow-emerald-500/30" style="width: {{ result.tech_score }}%"></div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            {% if result.apt_total > 0 %}
+                            <div>
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="font-bold text-slate-700">Aptitude & Logic</span>
+                                    <span class="font-display font-bold text-brand-primary text-lg">{{ result.apt_score }}%</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                    <div class="bg-brand-primary h-full rounded-full transition-all duration-1000 ease-out shadow-lg shadow-brand-primary/30" style="width: {{ result.apt_score }}%"></div>
+                                </div>
+                            </div>
+                            {% endif %}                        
+                        </div>
                         
-                        {% if result.tech_total > 0 %}
+                        <!-- Psychometric -->
                         <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <span class="font-medium text-gray-700">Technical Knowledge</span>
-                                <span class="font-bold text-emerald-600 text-lg">{{ result.tech_score }}%</span>
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                                Your Key Attributes
+                            </h3>
+                            {% if result.psych_profile %}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {% for trait in result.psych_profile %}
+                                <div class="flex items-center gap-2.5 px-3.5 py-2.5 bg-white/50 backdrop-blur-sm text-slate-700 rounded-xl border border-white shadow-sm hover:shadow-md transition-shadow">
+                                    <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="font-bold text-sm leading-tight">{{ trait }}</span>
+                                </div>
+                                {% endfor %}
                             </div>
-                            <div class="w-full bg-gray-100 rounded-full h-3">
-                                <div class="bg-emerald-500 h-3 rounded-full transition-all duration-1000 ease-out" style="width: {{ result.tech_score }}%"></div>
-                            </div>
+                            {% else %}
+                            <p class="text-slate-500 italic text-sm bg-slate-50 p-4 rounded-xl border border-slate-100">Complete the psychometric section to reveal your attributes.</p>
+                            {% endif %}
                         </div>
-                        {% endif %}
-                        
-                        {% if result.apt_total > 0 %}
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <span class="font-medium text-gray-700">Aptitude & Logic</span>
-                                <span class="font-bold text-green-600 text-lg">{{ result.apt_score }}%</span>
-                            </div>
-                            <div class="w-full bg-gray-100 rounded-full h-3">
-                                <div class="bg-green-500 h-3 rounded-full transition-all duration-1000 ease-out" style="width: {{ result.apt_score }}%"></div>
-                            </div>
-                        </div>
-                        {% endif %}                        
-                    </div>
-                    
-                    <!-- Psychometric -->
-                    <div>
-                        <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Your Key Attributes</h3>
-                        {% if result.psych_profile %}
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {% for trait in result.psych_profile %}
-                            <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 text-gray-800 rounded-xl border border-gray-200">
-                                <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <span class="font-semibold text-sm leading-tight">{{ trait }}</span>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <p class="text-gray-500 italic text-sm">Complete the psychometric section to reveal your attributes.</p>
-                        {% endif %}
                     </div>
                 </div>
             </div>
 
             <!-- Header -->
-            <div class="text-center mb-10">
-                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Recommended Programs</h1>
-                <p class="text-sm text-gray-500">
-                    Curated for your <span class="font-semibold text-blue-600">{{ user.degree.name }}</span> degree
+            <div class="text-center mb-8 animate-[fadeIn_0.6s_ease-out]">
+                <h1 class="text-2xl sm:text-3xl font-display font-bold text-slate-900 mb-2">Recommended Programs</h1>
+                <p class="text-sm text-slate-600">
+                    Curated for your <span class="font-bold text-brand-primary bg-brand-primary/5 px-2 py-0.5 rounded">{{ user.degree.name }}</span> degree
                 </p>
             </div>
 
-            <!-- Course Cards Grid -->
+            <!-- Course Cards Grid (COMPACT STYLE) -->
             {% if course_bundles %}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-[fadeIn_0.8s_ease-out]">
                 {% for bundle in course_bundles %}
-                <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
+                <div class="glass-card overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-primary/10 transition-all duration-300">
                     
                     <!-- Card Content -->
-                    <div class="p-6 flex-grow">
-                        <!-- Title Row: Title left, Duration right -->
-                        <div class="flex items-start justify-between gap-3 mb-4">
-                            <h2 class="text-lg font-bold text-gray-900 leading-snug">{{ bundle.career_title }}</h2>
-                            <span class="flex-shrink-0 px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-semibold rounded-full border border-emerald-100">
+                    <div class="p-5 flex-grow">
+                        <!-- Title Row -->
+                        <div class="flex items-start justify-between gap-4 mb-4">
+                            <h2 class="text-lg font-display font-bold text-slate-900 leading-snug group-hover:text-brand-primary transition-colors duration-300">{{ bundle.career_title }}</h2>
+                            <span class="flex-shrink-0 px-2.5 py-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-bold uppercase tracking-wider rounded-full border border-emerald-100/50 shadow-sm">
                                 {{ bundle.duration }}
                             </span>
                         </div>
                         
-                        <!-- Description -->
-                        <!-- <p class="text-gray-500 text-sm leading-relaxed mb-5">
-                            Complete career pathway to become a {{ bundle.career_title }}
-                        </p> -->
-
                         <!-- Skills -->
                         <div class="mb-4">
-                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Skills</p>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                {% for skill in bundle.get_skills_list %}{{ skill }}{% if not forloop.last %}<span class="text-gray-500 text-base font-bold mx-1">•</span>{% endif %}{% endfor %}
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-accent"></span>
+                                Skills
+                            </p>
+                            <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                                {% for skill in bundle.get_skills_list %}{{ skill }}{% if not forloop.last %}<span class="text-slate-300 text-sm font-bold mx-1">•</span>{% endif %}{% endfor %}
                             </p>
                         </div>
 
                         <!-- Average Salary -->
-                        <div class="mt-4">
-                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Avg. Starting Salary</p>
-                            <p class="text-sm font-bold text-emerald-600">₹{{ bundle.initial_salary|floatformat:0 }}/month</p>
+                        <div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Avg. Starting Salary</p>
+                            <p class="text-sm font-bold text-emerald-600 bg-emerald-50 inline-block px-2 py-0.5 rounded-md border border-emerald-100">₹{{ bundle.initial_salary|floatformat:0 }}/month</p>
                         </div>
                     </div>
                     
                     <!-- Card Footer -->
-                    <div class="border-t border-gray-100 px-6 py-6 bg-gray-50/50">
-                        <div class="flex justify-between items-center mb-5">
+                    <div class="border-t border-white/40 px-5 py-4 bg-white/30 backdrop-blur-sm">
+                        <div class="flex justify-between items-center mb-4">
                             {% if active_course_bundle_id != bundle.id %}
                             <div>
-                                <p class="text-xs text-gray-400 mb-1">Course Fee</p>
+                                <p class="text-[11px] font-medium text-slate-500 mb-0.5">Course Fee</p>
                                 {% if FREE_ALL_COURSES %}
                                 <div class="flex flex-col">
-                                    <div class="flex items-baseline gap-2">
-                                        <span class="text-xl font-bold text-green-600">Free</span>
-                                        <span class="text-sm text-gray-400 line-through ml-1">₹{{ bundle.original_price|floatformat:0 }}</span>
+                                    <div class="flex items-baseline gap-1.5">
+                                        <span class="text-xl font-display font-bold text-emerald-600">Free</span>
+                                        <span class="text-xs text-slate-400 line-through decoration-slate-300 decoration-2">₹{{ bundle.original_price|floatformat:0 }}</span>
                                     </div>
-                                    <p class="text-xs text-red-600 font-bold mt-1 animate-pulse">Valid for next 24 hr</p>
+                                    <div class="flex items-center gap-1 mt-0.5 text-[10px] font-bold text-brand-accent animate-pulse">
+                                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Valid for next 24 hr
+                                    </div>
                                 </div>
                                 {% else %}
                                 <div class="flex items-baseline gap-2">
-                                    <span class="text-xl font-bold text-gray-900">₹{{ bundle.discounted_price|floatformat:0 }}</span>
-                                    <span class="text-sm text-gray-400 line-through ml-1">₹{{ bundle.original_price|floatformat:0 }}</span>
+                                    <span class="text-xl font-display font-bold text-slate-900">₹{{ bundle.discounted_price|floatformat:0 }}</span>
+                                    <span class="text-xs text-slate-400 line-through decoration-slate-300 decoration-2">₹{{ bundle.original_price|floatformat:0 }}</span>
                                 </div>
                                 {% endif %}
                             </div>
                             {% else %}
-                            <div></div>
+                            <div>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 text-[11px] font-bold rounded-lg border border-green-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Active
+                                </span>
+                            </div>
                             {% endif %}
                             <div class="text-right">
-                                <p class="text-xs text-gray-400 mb-1">Next Batch</p>
-                                <p class="text-sm font-semibold text-gray-700">{{ bundle.next_batch_date|date:"d M Y" }}</p>
+                                <p class="text-[11px] font-medium text-slate-500 mb-0.5">Next Batch</p>
+                                <p class="text-xs font-bold text-slate-700 bg-slate-100/50 px-1.5 py-0.5 rounded-md">{{ bundle.next_batch_date|date:"d M Y" }}</p>
                             </div>
                         </div>
                         
                         {% if active_course_bundle_id == bundle.id %}
-                        <button disabled class="block w-full py-3 bg-green-600 text-white text-center text-sm font-semibold rounded-xl cursor-default">
-                            Enrolled
+                        <button disabled class="w-full py-2.5 bg-emerald-500/10 text-emerald-700 text-center text-sm font-bold rounded-lg cursor-default border border-emerald-500/20">
+                            Already Enrolled
                         </button>
                         {% else %}
-                        <a href="{% url 'enroll_course' bundle.slug %}" class="block w-full py-3 bg-blue-600 text-white text-center text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+                        <a href="{% url 'enroll_course' bundle.slug %}" class="btn-primary w-full py-2.5 text-sm shadow-md shadow-brand-primary/20 group-hover:scale-[1.01] transition-transform">
                             Enroll Now
                         </a>
                         {% endif %}
@@ -159,22 +183,20 @@
             {% endif %}
 
             <!-- Bottom Actions -->
-            <div class="mt-20">
-                <div class="flex flex-row items-center justify-center gap-3 w-full sm:w-auto mx-auto max-w-lg sm:max-w-none">
-                    <a href="{% url 'course_list' %}" class="flex-1 sm:flex-none justify-center group flex items-center gap-2 sm:gap-3 px-3 sm:px-8 py-3 sm:py-4 bg-white text-xs sm:text-base text-gray-900 border-2 border-gray-200 rounded-xl font-bold hover:border-blue-600 hover:text-blue-600 transition-all shadow-sm hover:shadow-md">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-blue-600 transition-colors hidden sm:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <div class="mt-12 animate-[fadeIn_1s_ease-out]">
+                <div class="flex flex-row items-center justify-center gap-3 sm:gap-6 w-full max-w-2xl mx-auto px-4 sm:px-0">
+                    <a href="{% url 'course_list' %}" class="btn-primary flex-1 sm:flex-none justify-center px-4 sm:px-8 py-3 sm:min-w-[180px] shadow-lg shadow-brand-primary/25 text-xs sm:text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
                         </svg>
-                        <span class="sm:hidden">Explore Courses</span>
-                        <span class="hidden sm:inline">Explore All Courses</span>
+                        <span class="truncate">All Courses</span>
                     </a>
                     
-                    <a href="{% url 'dashboard' %}" class="flex-1 sm:flex-none justify-center flex items-center gap-2 text-xs sm:text-base text-gray-600 font-bold bg-gray-100 border-2 border-transparent px-3 sm:px-8 py-3 sm:py-4 rounded-xl hover:bg-gray-200 transition-colors">
-                        <svg class="w-4 h-4 sm:w-4 sm:h-4 text-gray-500 hidden sm:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <a href="{% url 'dashboard' %}" class="btn-secondary flex-1 sm:flex-none justify-center px-4 sm:px-8 py-3 sm:min-w-[180px] text-xs sm:text-sm">
+                        <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                         </svg>
-                        <span class="sm:hidden">Dashboard</span>
-                        <span class="hidden sm:inline">Back to Dashboard</span>
+                        <span class="truncate">Dashboard</span>
                     </a>
                 </div>
             </div>

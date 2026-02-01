@@ -15,7 +15,7 @@ def start_assessment(request):
         messages.warning(request, "Please complete your profile before starting the assessment.")
         return redirect('profile')
 
-    # Assessment.objects.filter(user=user, status='completed').delete()
+    Assessment.objects.filter(user=user, status='completed').delete()
     
     # Check if assessment already taken
     assessment = Assessment.objects.filter(user=user, status='completed').last()

@@ -3,78 +3,105 @@
 {% block title %}Explore Courses - Karyo{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-8 sm:py-12">
-    <div class="container mx-auto px-4">
-        <div class="max-w-6xl mx-auto">
+<div class="min-h-screen bg-notebook-bg pb-20 pt-10 sm:pt-16 relative overflow-hidden">
+    <!-- Background Decor -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl -z-10 opacity-40 pointer-events-none">
+         <div class="absolute top-0 right-1/3 w-96 h-96 bg-brand-primary/10 rounded-full blur-[100px]"></div>
+         <div class="absolute bottom-1/3 left-10 w-80 h-80 bg-brand-accent/10 rounded-full blur-[80px]"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-7xl mx-auto">
             
             <!-- Header -->
-            <div class="text-center mb-10">
-                <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Explore Our Courses</h1>
-                <p class="text-sm text-gray-500">
-                    Master the skills you need to launch your career. From foundations to production-ready skills.
+            <div class="text-center mb-12 sm:mb-16 animate-[fadeIn_0.6s_ease-out]">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-slate-900 mb-4 tracking-tight">
+                    Explore Our <span class="text-brand-primary">Courses</span>
+                </h1>
+                <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                    Master the skills you need to launch your career. From foundations to production-ready expertise.
                 </p>
             </div>
 
             <!-- Course Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% for course in courses %}
-                <div class="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 overflow-hidden flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-200">
+                <div class="glass-card overflow-hidden flex flex-col group hover:-translate-y-2 hover:shadow-2xl hover:shadow-brand-primary/10 transition-all duration-300 animate-[fadeIn_0.8s_ease-out_0.{{ forloop.counter }}s] fill-mode-backwards">
                     
                     <!-- Card Content -->
-                    <div class="p-6 flex-grow">
+                    <div class="p-5 flex-grow">
                         <!-- Title Row: Title left, Level right -->
-                        <div class="flex items-start justify-between gap-3 mb-4">
-                            <h2 class="text-lg font-bold text-gray-900 leading-snug">{{ course.title }}</h2>
-                            <span class="flex-shrink-0 px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-semibold rounded-full border border-emerald-100">
+                        <div class="flex items-start justify-between gap-4 mb-4">
+                            <h2 class="text-lg font-display font-bold text-slate-900 leading-snug group-hover:text-brand-primary transition-colors duration-300">{{ course.title }}</h2>
+                            <span class="flex-shrink-0 px-2.5 py-0.5 bg-emerald-50 text-emerald-600 text-[11px] font-bold uppercase tracking-wider rounded-full border border-emerald-100/50 shadow-sm">
                                 {{ course.duration }}
                             </span>
                         </div>
                         
                         <!-- Topics/Skills -->
                         <div>
-                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Skills Covered</p>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                {% for skill in course.get_skills_list %}{{ skill }}{% if not forloop.last %}<span class="text-gray-500 text-base font-bold mx-1">•</span>{% endif %}{% endfor %}
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-brand-accent"></span>
+                                Skills Covered
                             </p>
+                            <div class="flex flex-wrap gap-1.5">
+                                {% for skill in course.get_skills_list %}
+                                <span class="inline-block px-2 py-0.5 bg-slate-50 text-slate-600 text-[11px] font-medium rounded-md border border-slate-100">
+                                    {{ skill }}
+                                </span>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Card Footer -->
-                    <div class="border-t border-gray-100 px-6 py-6 bg-gray-50/50">
-                        <div class="flex justify-between items-center mb-5">
+                    <div class="border-t border-white/40 px-5 py-4 bg-white/30 backdrop-blur-sm">
+                        <div class="flex justify-between items-end mb-4">
                                 {% if active_course_id != course.id %}
                                 <div>
-                                    <p class="text-xs text-gray-400 mb-1">Course Fee</p>
+                                    <p class="text-[11px] font-medium text-slate-500 mb-0.5">Course Fee</p>
                                     {% if FREE_ALL_COURSES %}
                                     <div class="flex flex-col">
-                                        <div class="flex items-baseline gap-2">
-                                            <span class="text-xl font-bold text-green-600">Free</span>
-                                            <span class="text-sm text-gray-400 line-through ml-1">₹{{ course.original_price|floatformat:0 }}</span>
+                                        <div class="flex items-baseline gap-1.5">
+                                            <span class="text-xl font-display font-bold text-emerald-600">Free</span>
+                                            <span class="text-xs text-slate-400 line-through decoration-slate-300 decoration-2">₹{{ course.original_price|floatformat:0 }}</span>
                                         </div>
-                                        <p class="text-xs text-red-600 font-bold mt-1 animate-pulse">Valid for next 24 hr</p>
+                                        <div class="flex items-center gap-1 mt-0.5 text-[10px] font-bold text-brand-accent animate-pulse">
+                                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Valid for next 24 hr
+                                        </div>
                                     </div>
                                     {% else %}
                                     <div class="flex items-baseline gap-2">
-                                        <span class="text-xl font-bold text-gray-900">₹{{ course.discounted_price|floatformat:0 }}</span>
-                                        <span class="text-sm text-gray-400 line-through ml-1">₹{{ course.original_price|floatformat:0 }}</span>
+                                        <span class="text-xl font-display font-bold text-slate-900">₹{{ course.discounted_price|floatformat:0 }}</span>
+                                        <span class="text-xs text-slate-400 line-through decoration-slate-300 decoration-2">₹{{ course.original_price|floatformat:0 }}</span>
                                     </div>
                                     {% endif %}
                                 </div>
                                 {% else %}
-                                <div></div>
+                                <div>
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 text-[11px] font-bold rounded-lg border border-green-100">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Active
+                                    </span>
+                                </div>
                                 {% endif %}
                             <div class="text-right">
-                                <p class="text-xs text-gray-400 mb-1">Next Batch</p>
-                                <p class="text-sm font-semibold text-gray-700">{{ course.next_batch_date|date:"d M Y" }}</p>
+                                <p class="text-[11px] font-medium text-slate-500 mb-0.5">Next Batch</p>
+                                <p class="text-xs font-bold text-slate-700 bg-slate-100/50 px-1.5 py-0.5 rounded-md">{{ course.next_batch_date|date:"d M Y" }}</p>
                             </div>
                         </div>
                         
                         {% if active_course_id == course.id %}
-                        <button disabled class="block w-full py-3 bg-green-600 text-white text-center text-sm font-semibold rounded-xl cursor-default">
-                            Enrolled
+                        <button disabled class="w-full py-2.5 bg-emerald-500/10 text-emerald-700 text-center text-sm font-bold rounded-lg cursor-default border border-emerald-500/20">
+                            Already Enrolled
                         </button>
                         {% else %}
-                        <a href="{% url 'enroll_course' course.slug %}" class="block w-full py-3 bg-blue-600 text-white text-center text-sm font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+                        <a href="{% url 'enroll_course' course.slug %}" class="btn-primary w-full py-2.5 text-sm shadow-md shadow-brand-primary/20 group-hover:scale-[1.01] transition-transform">
                             Enroll Now
                         </a>
                         {% endif %}

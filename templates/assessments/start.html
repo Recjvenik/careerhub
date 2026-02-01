@@ -11,40 +11,69 @@
 {% endblock %}
 
 {% block content %}
-<div
-    class="min-h-[calc(100vh-4rem)] sm:min-h-0 flex items-center sm:items-start bg-notebook-bg sm:py-12 pb-24 sm:pb-12">
-    <div class="container mx-auto px-4">
-        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-5 sm:p-8 border border-gray-200 text-center">
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Are You Ready for Your Dream Job?</h1>
-            <p class="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
-                Thousands of students have discovered their perfect career path. Take 5 minutes to see where you stand
-                and what opportunities are waiting for you.
+<div class="min-h-[calc(100vh-80px)] bg-notebook-bg pb-24 sm:pb-12 pt-4 relative overflow-y-auto overflow-x-hidden flex flex-col items-center sm:justify-center dark-scroll">
+    <!-- Background Decor -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-5xl -z-10 opacity-30 pointer-events-none">
+        <div class="absolute top-20 right-0 w-80 h-80 bg-brand-primary/10 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-brand-accent/10 rounded-full blur-[100px]"></div>
+    </div>
+
+    <div class="container mx-auto px-4 relative z-10 w-full">
+        <div class="max-w-3xl mx-auto glass-card p-5 sm:p-10 text-center animate-[scaleIn_0.4s_ease-out]">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-slate-900 mb-2 leading-tight">
+                Are You Ready for Your <span class="text-brand-primary">Dream Job?</span>
+            </h1>
+            <p class="text-sm sm:text-base text-slate-600 mb-6 max-w-2xl mx-auto leading-relaxed px-2">
+                Thousands of students have discovered their perfect career path. Take 5 minutes to see where you stand.
             </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-10 text-left">
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <div class="font-semibold text-blue-600 mb-1">Show What You Know</div>
-                    <p class="text-sm text-gray-600">Quick questions that highlight your abilities.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-6 mb-2 sm:mb-8 text-left">
+                <!-- Item 1 -->
+                <div class="p-4 bg-white/60 rounded-xl border border-white shadow-sm hover:shadow-md transition-all group">
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+                        </svg>
+                    </div>
+                    <div class="font-bold text-slate-900 text-base mb-1">Show What You Know</div>
+                    <p class="text-sm text-slate-500 leading-snug">Quick questions that highlight your abilities.</p>
                 </div>
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <div class="font-semibold text-blue-600 mb-1">Unlock Your Potential</div>
-                    <p class="text-sm text-gray-600">See opportunities you never considered.</p>
+                
+                <!-- Item 2 -->
+                <div class="p-4 bg-white/60 rounded-xl border border-white shadow-sm hover:shadow-md transition-all group">
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                        </svg>
+                    </div>
+                    <div class="font-bold text-slate-900 text-base mb-1">Unlock Potential</div>
+                    <p class="text-sm text-slate-500 leading-snug">See opportunities you never considered.</p>
                 </div>
-                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                    <div class="font-semibold text-blue-600 mb-1">Build Your Future</div>
-                    <p class="text-sm text-gray-600">Courses designed around your unique profile.</p>
+
+                <!-- Item 3 -->
+                <div class="p-4 bg-white/60 rounded-xl border border-white shadow-sm hover:shadow-md transition-all group">
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75m-.75 3h.75m-.75 3h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z" />
+                        </svg>
+                    </div>
+                    <div class="font-bold text-slate-900 text-base mb-1">Build Your Future</div>
+                    <p class="text-sm text-slate-500 leading-snug">Courses designed around your unique profile.</p>
                 </div>
             </div>
 
-            <!-- Desktop button -->
-            <form method="post" id="assessment-form" class="hidden sm:block">
+            <!-- Desktop Button (Hidden on Mobile) -->
+            <form method="post" id="assessment-form-desktop" class="hidden sm:block">
                 {% csrf_token %}
                 <button type="submit"
-                    class="px-8 py-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    class="btn-primary px-10 py-3.5 shadow-lg shadow-brand-primary/25 text-base font-medium group transition-all hover:scale-[1.02]">
                     Start Assessment
+                    <svg class="w-5 h-5 ml-2 inline-block transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+                    </svg>
                 </button>
             </form>
-            <!-- Hidden form for mobile -->
+             <!-- Mobile Hidden Form Hook -->
             <form method="post" id="assessment-form-mobile" class="sm:hidden hidden">
                 {% csrf_token %}
             </form>
@@ -52,12 +81,14 @@
     </div>
 </div>
 
-<!-- Mobile sticky bottom button - matching login/profile style -->
-<div
-    class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-4 flex items-center justify-center z-20 sm:hidden">
+<!-- Sticky Mobile Button -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-100 p-4 z-50 sm:hidden animate-[slideUp_0.3s_ease-out]">
     <button type="submit" form="assessment-form-mobile"
-        class="w-full max-w-xs py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all text-base">
+        class="btn-primary w-full py-3.5 shadow-lg shadow-brand-primary/25 text-base font-medium flex items-center justify-center">
         Start Assessment
+        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
     </button>
 </div>
 {% endblock %}

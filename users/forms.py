@@ -5,11 +5,11 @@ from .models import CustomUser
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+        'class': 'input-field',
         'placeholder': 'Create a password'
     }))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+        'class': 'input-field',
         'placeholder': 'Confirm password'
     }))
 
@@ -18,15 +18,15 @@ class UserRegistrationForm(forms.ModelForm):
         fields = ['full_name', 'mobile', 'email']
         widgets = {
             'full_name': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+                'class': 'input-field',
                 'placeholder': 'Enter your full name'
             }),
             'mobile': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+                'class': 'input-field',
                 'placeholder': 'Enter mobile number'
             }),
             'email': forms.EmailInput(attrs={
-                'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+                'class': 'input-field',
                 'placeholder': 'Enter email address'
             }),
         }
@@ -65,11 +65,11 @@ class UserRegistrationForm(forms.ModelForm):
 
 class UserLoginForm(forms.Form):
     username = forms.CharField(label='Mobile or Email', widget=forms.TextInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+        'class': 'input-field',
         'placeholder': 'Enter mobile or email'
     }))
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+        'class': 'input-field',
         'placeholder': 'Enter password'
     }))
 
@@ -95,7 +95,7 @@ class UserLoginForm(forms.Form):
 
 class ForgotPasswordForm(forms.Form):
     mobile_or_email = forms.CharField(label='Mobile or Email', widget=forms.TextInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+        'class': 'input-field',
         'placeholder': 'Enter registered mobile or email'
     }))
 
@@ -111,11 +111,11 @@ class ForgotPasswordForm(forms.Form):
 
 class ResetPasswordForm(forms.Form):
     new_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+        'class': 'input-field',
         'placeholder': 'Enter new password'
     }))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all',
+        'class': 'input-field',
         'placeholder': 'Confirm new password'
     }))
 
@@ -134,19 +134,19 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['full_name', 'email', 'mobile', 'gender', 'degree', 'college', 'branch', 'city', 'state']
         widgets = {
             'full_name': forms.TextInput(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                'class': 'input-field',
                 'placeholder': 'Enter your full name'
             }),
             'email': forms.EmailInput(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                'class': 'input-field',
                 'placeholder': 'Enter email address'
             }),
             'mobile': forms.TextInput(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                'class': 'input-field',
                 'placeholder': 'Enter mobile number'
             }),
             'gender': forms.Select(attrs={
-                'class': 'block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 appearance-none bg-white cursor-pointer select-arrow'
+                'class': 'input-field appearance-none bg-white cursor-pointer select-arrow'
             }),
             'college': forms.HiddenInput(),
             'branch': forms.HiddenInput(),
